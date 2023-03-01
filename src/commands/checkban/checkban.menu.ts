@@ -1,15 +1,11 @@
-import { Card, MenuCommand } from 'kbotify';
-import { checkbanId } from './checkban.id';
+import { Card, MenuCommand } from "kbotify";
+import { checkbanId } from "./checkban.id";
+import { checkbanName } from "./checkban.name";
 
 class CheckbanMenu extends MenuCommand {
-    code = 'checkban';
-    trigger = 'checkban';
-    help = '.checkban 菜单';
-    intro = '菜单';
-    menu = new Card()
-        .addText('一些卡片里需要展示的东西')
-        .addText('.checkban id:[id]')
-        .addText('.checkban name:[name]').toString();
-    useCardMenu = true;
+  code = "checkban";
+  trigger = "checkban";
+  help = ".checkban 菜单";
 }
-export const checkbanMenu = new CheckbanMenu(checkbanId);
+
+export const checkbanMenu = new CheckbanMenu(checkbanId, checkbanName);

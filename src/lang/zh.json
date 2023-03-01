@@ -1,0 +1,33 @@
+{
+  "base": {
+    "status": {
+      "-1": "无",
+      "0": "石锤",
+      "1": "待处理"
+    }
+  },
+  "cheackban": {
+    "name": {
+      "title": "存在多个结果",
+      "description": "请输入对应玩家下标，来查询；取消本次操作，可以输入`取消`"
+    },
+    "id": {
+      "title": "检测玩家状态"
+    },
+    "idTyperError": "id类型必须是数字",
+    "idLengthError": "id长度不符合，请在最短5到最大50范围内",
+    "username": "名称",
+    "status": "状态",
+    "updateTime": "更新时间",
+    "createTime": "创建时间",
+    "games": "游戏"
+  },
+  "sitestats": {
+    "trend": {
+      "title": "热门案件"
+    },
+    "admins": {
+      "title": "管理员"
+    }
+  }
+}

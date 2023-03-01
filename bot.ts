@@ -1,5 +1,5 @@
 import { KBotify } from 'kbotify';
-import config from './config'
+import config from './config';
 
 export const bot = new KBotify({
     mode: 'websocket',

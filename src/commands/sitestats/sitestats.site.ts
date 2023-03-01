@@ -2,35 +2,29 @@ import axios, { AxiosResponse } from "axios";
 import api from "../../configs/api";
 import commandPack from "../commandPack";
 import Http from "../../lib/http";
+import SitestatsCalcCountTemplate from "../../template/SitestatsCalcCountTemplate";
 
 import { AppCommand, AppFunc, BaseSession, Card } from "kbotify";
 import { bot } from "../../../bot";
-import { PlayerCardTemplate } from "../../template/playerCardTemplate";
 
-class CheckbanId extends AppCommand {
-  code = "id";
-  trigger = "id";
-  help = "`.checkban id [案件id]`";
+class SitestatsSite extends AppCommand {
+  code = "site";
+  trigger = "site";
+  help = "`.checkban site (reports:true) (players:true) (confirmed:true) (registers:true) (banAppeals:true)`";
   intro = "";
   http = new Http();
 
   func: AppFunc<BaseSession> = async (session) => {
-    console.log(session);
     if (!session.args.length) {
       return session.reply(this.help);
     }
 
     const { mainValue, other } = new commandPack.CommandFactory().pack(session.args);
 
-    if (typeof mainValue != "number") {
-      session.reply("not id");
-    }
+    let res = await this.getStatistics(other);
 
-    let player_info = await this.getPlayerInfo(mainValue);
-
-    if (player_info) {
-      // send playerCard message
-      session.replyCard(new PlayerCardTemplate(player_info).generation());
+    if (res) {
+      session.replyCard(new SitestatsCalcCountTemplate(res).generation());
       return;
     }
 
@@ -38,24 +32,22 @@ class CheckbanId extends AppCommand {
   };
 
   /**
-   * 获取案件状态
-   * @param id
+   * 网站统计信息
+   * @param params.time
    * @protected
    */
-  protected async getPlayerInfo(id: number): Promise<AxiosResponse> {
+  protected async getStatistics(params: any): Promise<AxiosResponse> {
     try {
-      if (!id) {
-        throw "id";
-      }
-
       return new Promise(async (resolve, reject) => {
-
-        let res = await axios({
-          url: this.http.address + "api/" + api.player,
+        await axios({
+          url: this.http.address + "api/" + api.statistics,
           method: "get",
           params: {
-            "history": true,
-            "personaId": id
+            reports: params.get("reports") ?? true,
+            players: params.get("players") ?? true,
+            confirmed: params.get("confirmed") ?? true,
+            registers: params.get("registers") ?? true,
+            banAppeals: params.get("banAppeals") ?? true
           }
         }).then(res => {
           if (res.data.success === 1) {
@@ -75,4 +67,4 @@ class CheckbanId extends AppCommand {
   }
 }
 
-export const checkbanId = new CheckbanId();
+export const sitestatsSite = new SitestatsSite();

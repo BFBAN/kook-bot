@@ -2,60 +2,50 @@ import axios, { AxiosResponse } from "axios";
 import api from "../../configs/api";
 import commandPack from "../commandPack";
 import Http from "../../lib/http";
+import SitestatsTrendTemplate from "../../template/sitestatsTrendTemplate";
 
 import { AppCommand, AppFunc, BaseSession, Card } from "kbotify";
 import { bot } from "../../../bot";
-import { PlayerCardTemplate } from "../../template/playerCardTemplate";
 
-class CheckbanId extends AppCommand {
-  code = "id";
-  trigger = "id";
-  help = "`.checkban id [案件id]`";
+class SitestatsHot extends AppCommand {
+  code = "hot";
+  trigger = "hot";
+  help = "`.checkban hot (time:week) (limit:5)`";
   intro = "";
   http = new Http();
 
   func: AppFunc<BaseSession> = async (session) => {
-    console.log(session);
     if (!session.args.length) {
       return session.reply(this.help);
     }
 
     const { mainValue, other } = new commandPack.CommandFactory().pack(session.args);
 
-    if (typeof mainValue != "number") {
-      session.reply("not id");
-    }
+    let resTrend = await this.getTrend(other);
 
-    let player_info = await this.getPlayerInfo(mainValue);
-
-    if (player_info) {
-      // send playerCard message
-      session.replyCard(new PlayerCardTemplate(player_info).generation());
-      return;
+    if (resTrend) {
+      session.replyCard(new SitestatsTrendTemplate(resTrend).generation());
+      return ;
     }
 
     session.reply(":( I have an error");
   };
 
   /**
-   * 获取案件状态
-   * @param id
+   * 获取热度案件
+   * @param params.time 查询范围
+   * @param params.limit 一页数量
    * @protected
    */
-  protected async getPlayerInfo(id: number): Promise<AxiosResponse> {
+  protected async getTrend(params: any): Promise<AxiosResponse> {
     try {
-      if (!id) {
-        throw "id";
-      }
-
       return new Promise(async (resolve, reject) => {
-
-        let res = await axios({
-          url: this.http.address + "api/" + api.player,
+        await axios({
+          url: this.http.address + "api/" + api.trend,
           method: "get",
           params: {
-            "history": true,
-            "personaId": id
+            "limit": params.get('limit') ?? 5,
+            "time": params.get('time') ?? 'week'
           }
         }).then(res => {
           if (res.data.success === 1) {
@@ -75,4 +65,4 @@ class CheckbanId extends AppCommand {
   }
 }
 
-export const checkbanId = new CheckbanId();
+export const sitestatsHot = new SitestatsHot();
