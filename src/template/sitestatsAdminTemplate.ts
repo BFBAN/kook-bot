@@ -2,10 +2,13 @@ import Http from "../lib/http";
 import { Card } from "kbotify";
 import i18n from "../../i18n";
 import { BaseFooterTemplate } from "./baseFooterTemplate";
+import config from "../../config";
 
 class SitestatsAdminTemplate {
   webData: any;
+
   http = new Http();
+  showListNumber: number = 20;
 
   constructor(data: any) {
     this.webData = data;
@@ -20,16 +23,29 @@ class SitestatsAdminTemplate {
     }
 
     message
-      .addTitle(i18n.translation.sitestats.trend.title)
+      .addTitle(i18n.translation.sitestats.admins.title)
+      .addText(i18n.translation.sitestats.admins.description)
       .addDivider();
 
-    let fields: { type: string; content: string; }[] = [];
-
-    web_data.forEach((i: { username: string; }) => {
-      fields.push({
+    let fields: Array<any> = [
+      {
         "type": "kmarkdown",
-        "content": `${i.username}`
-      });
+        "content": "**昵称**"
+      },
+      {
+        "type": "kmarkdown",
+        "content": ""
+      }
+    ];
+
+    web_data.data.forEach((i: {
+      id: any;
+      username: string;
+    }) => {
+      if (fields.length <= this.showListNumber) {
+        fields.push({ "type": "kmarkdown", "content": `${i.username}` });
+        fields.push({ "type": "kmarkdown", "content": `[链接](${config.webSite}/account/${i.id})` });
+      }
     });
 
     message
@@ -37,10 +53,12 @@ class SitestatsAdminTemplate {
         type: "section",
         "text": {
           "type": "paragraph",
-          "cols": 1,
+          "cols": 2,
           "fields": fields
         }
-      });
+      })
+      .addDivider()
+      .addText(i18n.translation.sitestats.admins.more);
 
     // set card footer
     message = new BaseFooterTemplate().add(message);

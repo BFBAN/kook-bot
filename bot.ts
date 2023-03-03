@@ -7,5 +7,6 @@ export const bot = new KBotify({
     port: config.port,
     verifyToken: config.kookAuth.khlverify,
     key: config.kookAuth.khlkey,
-    ignoreDecryptError: true,
+    ignoreDecryptError: false,
+    debug: config.__DEBUG__
 });

@@ -1,28 +1,20 @@
 {
-  "name": "kbotify-template",
+  "name": "bfban",
   "version": "0.0.1",
-  "description": "Starter kit for kBotify bots",
+  "description": "bfban kook bot",
   "main": "src/index.ts",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node --nolazy -r ts-node/register -r tsconfig-paths/register index.ts"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/fi6/kbotify-template.git"
-  },
-  "keywords": [
-    "kbotify",
-    "kaiheila",
-    "bot"
-  ],
+  "keywords": [],
   "author": "FlappyIce",
   "license": "MIT",
   "dependencies": {
     "axios": "^1.3.4",
     "i18n": "^0.15.1",
     "i18n-ts": "^1.0.5",
-    "kbotify": "^0.2.5"
+    "kbotify": "^0.2.5",
+    "upath": "^2.0.1"
   },
   "devDependencies": {
     "@types/bunyan": "^1.8.6",

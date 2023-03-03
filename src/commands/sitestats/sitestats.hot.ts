@@ -6,29 +6,30 @@ import SitestatsTrendTemplate from "../../template/sitestatsTrendTemplate";
 
 import { AppCommand, AppFunc, BaseSession, Card } from "kbotify";
 import { bot } from "../../../bot";
+import { ErrorTemplate } from "../../template/errorTemplate";
 
 class SitestatsHot extends AppCommand {
   code = "hot";
   trigger = "hot";
-  help = "`.checkban hot (time:week) (limit:5)`";
-  intro = "";
+  help = ".sitestats hot (limit:10) (limit:weekly)";
+  intro = "查询网站近期热门案件";
   http = new Http();
 
   func: AppFunc<BaseSession> = async (session) => {
-    if (!session.args.length) {
-      return session.reply(this.help);
+    try {
+      const { mainValue, other } = new commandPack.CommandFactory().pack(session.args);
+      let resTrend = await this.getTrend(other);
+
+      if (resTrend.data.length <= 0 && !resTrend) {
+        session.reply("抱歉，没有找到数据");
+        return;
+      }
+
+      session.replyCard(new SitestatsTrendTemplate(resTrend).generation(this.help));
+    } catch (err) {
+      session.replyCard(new ErrorTemplate(err).generation());
+      bot.logger.error(err);
     }
-
-    const { mainValue, other } = new commandPack.CommandFactory().pack(session.args);
-
-    let resTrend = await this.getTrend(other);
-
-    if (resTrend) {
-      session.replyCard(new SitestatsTrendTemplate(resTrend).generation());
-      return ;
-    }
-
-    session.reply(":( I have an error");
   };
 
   /**
@@ -44,8 +45,8 @@ class SitestatsHot extends AppCommand {
           url: this.http.address + "api/" + api.trend,
           method: "get",
           params: {
-            "limit": params.get('limit') ?? 5,
-            "time": params.get('time') ?? 'week'
+            "limit": params.get("limit") ?? 10,
+            "time": params.get("time") ?? "weekly"
           }
         }).then(res => {
           if (res.data.success === 1) {
@@ -53,14 +54,13 @@ class SitestatsHot extends AppCommand {
           }
           reject(res);
         }).catch(err => {
-          bot.logger.debug(err);
           return reject(err);
         });
 
       });
-    } catch (e) {
-      bot.logger.debug(e);
-      throw e;
+    } catch (err) {
+      bot.logger.error(err);
+      throw err;
     }
   }
 }

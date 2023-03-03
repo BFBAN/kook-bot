@@ -6,29 +6,31 @@ import SitestatsCalcCountTemplate from "../../template/SitestatsCalcCountTemplat
 
 import { AppCommand, AppFunc, BaseSession, Card } from "kbotify";
 import { bot } from "../../../bot";
+import { ErrorTemplate } from "../../template/errorTemplate";
 
 class SitestatsSite extends AppCommand {
   code = "site";
   trigger = "site";
-  help = "`.checkban site (reports:true) (players:true) (confirmed:true) (registers:true) (banAppeals:true)`";
-  intro = "";
+  help = ".sitestats site (reports:true) (players:true) (confirmed:true) (registers:true) (banAppeals:true)";
+  intro = "查询网站各项统计";
   http = new Http();
 
   func: AppFunc<BaseSession> = async (session) => {
-    if (!session.args.length) {
-      return session.reply(this.help);
+    try {
+      const { mainValue, other } = new commandPack.CommandFactory().pack(session.args);
+
+      let resStatistics = await this.getStatistics(other);
+
+      if (!resStatistics) {
+        session.reply('抱歉，没有找到数据');
+        return;
+      }
+
+      session.replyCard(new SitestatsCalcCountTemplate(resStatistics).generation());
+    } catch (err) {
+      session.replyCard(new ErrorTemplate(err).generation());
+      bot.logger.error(err);
     }
-
-    const { mainValue, other } = new commandPack.CommandFactory().pack(session.args);
-
-    let res = await this.getStatistics(other);
-
-    if (res) {
-      session.replyCard(new SitestatsCalcCountTemplate(res).generation());
-      return;
-    }
-
-    session.reply(":( I have an error");
   };
 
   /**
@@ -47,7 +49,8 @@ class SitestatsSite extends AppCommand {
             players: params.get("players") ?? true,
             confirmed: params.get("confirmed") ?? true,
             registers: params.get("registers") ?? true,
-            banAppeals: params.get("banAppeals") ?? true
+            banAppeals: params.get("banAppeals") ?? true,
+            from: 1514764800000
           }
         }).then(res => {
           if (res.data.success === 1) {
@@ -55,14 +58,13 @@ class SitestatsSite extends AppCommand {
           }
           reject(res);
         }).catch(err => {
-          bot.logger.debug(err);
           return reject(err);
         });
 
       });
-    } catch (e) {
-      bot.logger.debug(e);
-      throw e;
+    } catch (err) {
+      bot.logger.error(err);
+      throw err;
     }
   }
 }

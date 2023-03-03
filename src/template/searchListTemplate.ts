@@ -2,6 +2,7 @@ import { Card } from "kbotify";
 import i18n from "../../i18n";
 import Http from "../lib/http";
 import { BaseFooterTemplate } from "./baseFooterTemplate";
+import config from "../../config";
 
 class SearchListTemplate {
   searchList: any;
@@ -11,11 +12,15 @@ class SearchListTemplate {
     this.searchList = data;
   }
 
-  generation(): Card {
-    const that = this;
+  /**
+   * 生成搜索列表卡片
+   * @param other 额外参数
+   * @param mainValue 主参
+   * @param expirationTime 超时时间
+   */
+  generation(other: any = null, mainValue: string = "", expirationTime: number = 0): Card {
     let message = new Card();
     let search_list = this.searchList;
-    let waitingList = new Array();
 
     if (!search_list) {
       return message;
@@ -24,6 +29,14 @@ class SearchListTemplate {
     message
       .addTitle(i18n.translation.cheackban.name.title)
       .addText(i18n.translation.cheackban.name.description)
+      .addDivider()
+      .addModule({
+        type: "section",
+        "text": {
+          "type": "kmarkdown",
+          "content": `从网页查询 [详细列表](${config.webSite}/search?game=all&gameSort=${other.sort ?? "default"}&skip=0&keyword=${mainValue})`
+        }
+      })
       .addDivider();
 
     for (let index = 0; index < search_list.length; index++) {
@@ -34,7 +47,10 @@ class SearchListTemplate {
         "accessory": {
           "type": "button",
           "theme": "primary",
-          "value": i.originPersonaId,
+          "value": JSON.stringify({
+            uid: i.originPersonaId,
+            eventType: "search.list.select"
+          }),
           "text": {
             "type": "plain-text",
             "content": "select"
@@ -42,15 +58,35 @@ class SearchListTemplate {
         },
         "text": {
           "type": "kmarkdown",
-          "content": `#${index} ${i.historyName}`
+          "content": `${index}\t${i.historyName}`
         }
       });
     }
 
-    let endTime = new Date().getTime() + (1000 * 60);
+    let endTime = new Date().getTime() + (expirationTime ?? (1000 * 60));
 
     message
       .addCountdown("second", endTime, new Date().getTime());
+
+    // set card footer
+    message = new BaseFooterTemplate().add(message);
+
+    return message;
+  }
+
+  lockWidget() {
+    let message = new Card();
+    let search_list = this.searchList;
+
+    if (!search_list) {
+      return message;
+    }
+
+    message
+      .addTitle(i18n.translation.cheackban.name.title)
+      .addText(i18n.translation.cheackban.name.description)
+      .addDivider()
+      .addText("超时操作时间，事件已释放");
 
     // set card footer
     message = new BaseFooterTemplate().add(message);

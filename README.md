@@ -2,7 +2,7 @@
 一款kook平台机器人，快速的查询案件状态以及生成widget
 
 
-[官网](https://bot.bfban.com) | [反馈]()
+[官网](https://cabbagelol.github.io/kook-bot-docs)
 
 支持: [kBotify](https://github.com/fi6/kBotify) | [kbotify-template](https://github.com/fi6/kbotify-template) 
 
@@ -24,7 +24,7 @@ npm start
 
 ## 如何使用
 
-参考docs下指令大全 [链接](/docs/command.md)
+参考docs下指令大全 [链接](https://cabbagelol.github.io/kook-bot-docs)
 
 
 ---

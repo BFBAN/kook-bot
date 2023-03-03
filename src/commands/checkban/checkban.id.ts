@@ -6,35 +6,46 @@ import Http from "../../lib/http";
 import { AppCommand, AppFunc, BaseSession, Card } from "kbotify";
 import { bot } from "../../../bot";
 import { PlayerCardTemplate } from "../../template/playerCardTemplate";
+import { ErrorTemplate } from "../../template/errorTemplate";
 
 class CheckbanId extends AppCommand {
   code = "id";
   trigger = "id";
-  help = "`.checkban id [案件id]`";
-  intro = "";
+  help = ".cheackban id [id:number]";
+  intro = "使用id查询案件";
   http = new Http();
 
   func: AppFunc<BaseSession> = async (session) => {
-    console.log(session);
-    if (!session.args.length) {
-      return session.reply(this.help);
-    }
+    try {
+      if (!session.args.length) {
+        return session.reply(this.help);
+      }
 
-    const { mainValue, other } = new commandPack.CommandFactory().pack(session.args);
+      const { mainValue, other } = new commandPack.CommandFactory().pack(session.args);
 
-    if (typeof mainValue != "number") {
-      session.reply("not id");
-    }
+      if (!new RegExp(/^[0-9]+.?[0-9]*/).test(mainValue)) {
+        session.reply(`检查您的参数非数字`);
+        return;
+      }
 
-    let player_info = await this.getPlayerInfo(mainValue);
+      let player_info = await this.getPlayerInfo(mainValue);
 
-    if (player_info) {
+      if (!player_info) {
+        session.reply("没有找到玩家");
+        return;
+      }
+
       // send playerCard message
-      session.replyCard(new PlayerCardTemplate(player_info).generation());
-      return;
-    }
+      let id = await session.replyCard(new PlayerCardTemplate(player_info).generation());
 
-    session.reply(":( I have an error");
+      setTimeout(function() {
+        session.updateMessage(<string>id.msgSent?.msgId, "test");
+      }, 30000);
+
+    } catch (err) {
+      session.replyCard(new ErrorTemplate(err).generation());
+      bot.logger.error(err);
+    }
   };
 
   /**
@@ -42,15 +53,14 @@ class CheckbanId extends AppCommand {
    * @param id
    * @protected
    */
-  protected async getPlayerInfo(id: number): Promise<AxiosResponse> {
+  protected async getPlayerInfo(id: number) {
     try {
       if (!id) {
-        throw "id";
+        throw "缺少id";
       }
 
       return new Promise(async (resolve, reject) => {
-
-        let res = await axios({
+        await axios({
           url: this.http.address + "api/" + api.player,
           method: "get",
           params: {
@@ -63,14 +73,11 @@ class CheckbanId extends AppCommand {
           }
           reject(res);
         }).catch(err => {
-          bot.logger.debug(err);
           return reject(err);
         });
-
       });
-    } catch (e) {
-      bot.logger.debug(e);
-      throw e;
+    } catch (err) {
+      bot.logger.error(err);
     }
   }
 }

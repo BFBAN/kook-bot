@@ -6,29 +6,31 @@ import SitestatsAdminTemplate from "../../template/sitestatsAdminTemplate";
 
 import { AppCommand, AppFunc, BaseSession } from "kbotify";
 import { bot } from "../../../bot";
+import { ErrorTemplate } from "../../template/errorTemplate";
 
 class SitestatsAdmin extends AppCommand {
   code = "admin";
   trigger = "admin";
-  help = "`.checkban admin`";
-  intro = "";
+  help = ".sitestats admin";
+  intro = "查询网站管理员数量";
   http = new Http();
 
   func: AppFunc<BaseSession> = async (session) => {
-    if (!session.args.length) {
-      return session.reply(this.help);
-    }
+    try {
+      const { mainValue, other } = new commandPack.CommandFactory().pack(session.args);
 
-    const { mainValue, other } = new commandPack.CommandFactory().pack(session.args);
+      let resAdmin = await this.getAdmin(other);
 
-    let resAdmin = await this.getAdmin(other);
+      if (!resAdmin) {
+        session.reply('抱歉，没有找到数据');
+        return ;
+      }
 
-    if (resAdmin) {
       session.replyCard(new SitestatsAdminTemplate(resAdmin).generation());
-      return ;
+    } catch (err) {
+      session.replyCard(new ErrorTemplate(err).generation());
+      bot.logger.error(err);
     }
-
-    session.reply(":( I have an error");
   };
 
   /**
@@ -48,14 +50,13 @@ class SitestatsAdmin extends AppCommand {
           }
           reject(res);
         }).catch(err => {
-          bot.logger.debug(err);
           return reject(err);
         });
 
       });
-    } catch (e) {
-      bot.logger.debug(e);
-      throw e;
+    } catch (err) {
+      bot.logger.error(err);
+      throw err;
     }
   }
 }

@@ -5,7 +5,7 @@ import { checkbanName } from "./checkban.name";
 class CheckbanMenu extends MenuCommand {
   code = "checkban";
   trigger = "checkban";
-  help = ".checkban 菜单";
+  help = "";
 }
 
 export const checkbanMenu = new CheckbanMenu(checkbanId, checkbanName);

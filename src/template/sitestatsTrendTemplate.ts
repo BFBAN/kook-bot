@@ -8,11 +8,13 @@ class SitestatsTrendTemplate {
   trendData: any;
   http = new Http();
 
+  help: string | undefined;
+
   constructor(data: any) {
     this.trendData = data;
   }
 
-  generation(): Card {
+  generation(help: string): Card {
     let message = new Card();
     let trend_data = this.trendData;
 
@@ -22,23 +24,34 @@ class SitestatsTrendTemplate {
 
     message
       .addTitle(i18n.translation.sitestats.trend.title)
+      .addDivider()
+      .addText(help ?? "-")
       .addDivider();
 
-    let fields = [{"type": "kmarkdown", "content": "**名称**" }, { "type": "kmarkdown", "content": "**链接**" }, { "type": "kmarkdown", "content": "**热度**" }];
+    // 标题
+    let fields = [{ "type": "kmarkdown", "content": "**排名**" },
+      { "type": "kmarkdown", "content": "**名称**" },
+      { "type": "kmarkdown", "content": "**热度** / **评论** / **游览**" }];
+    let index = 1;
 
-    trend_data.forEach((i: {
+    // 插入内容
+    trend_data.data.forEach((i: {
+      viewNum: number;
+      commentsNum: number;
       originPersonaId: string;
       hot: string;
       originName: string;
     }) => {
-      fields.push({ "type": "kmarkdown", "content": i.originName });
-      fields.push({ "type": "kmarkdown", "content": this.http.address + "player/" + i.originPersonaId });
-      fields.push({ "type": "kmarkdown", "content": i.hot });
+      fields.push({ "type": "kmarkdown", "content": `#${index}` });
+      fields.push({ "type": "kmarkdown", "content": `[${i.originName ?? "-"}](${config.webSite}/player/${i.originPersonaId})` });
+      fields.push({ "type": "kmarkdown", "content": `${i.hot ?? 0}/${i.commentsNum ?? 0}/${i.viewNum ?? 0}` });
+
+      index += 1;
     });
 
     message
       .addModule({
-        "type": "section",
+        type: "section",
         "accessory": {},
         "text": {
           "type": "paragraph",

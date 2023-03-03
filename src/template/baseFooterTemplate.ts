@@ -16,7 +16,7 @@ class BaseFooterTemplate {
           },
           {
             "type": "plain-text",
-            "content": "@bfban 2018-" + new Date().getFullYear()
+            "content": "bfban 2018-" + new Date().getFullYear()
           },
           {
             "type": "plain-text",
