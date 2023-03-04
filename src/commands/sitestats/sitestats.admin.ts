@@ -17,8 +17,9 @@ class SitestatsAdmin extends AppCommand {
   http = new Http();
 
   func: AppFunc<BaseSession> = async (session) => {
+    const { mainValue, other } = new commandPack.CommandFactory().pack(session.args);
+
     try {
-      const { mainValue, other } = new commandPack.CommandFactory().pack(session.args);
 
       let resAdmin = await this.getAdmin(other);
 
@@ -27,9 +28,12 @@ class SitestatsAdmin extends AppCommand {
         return;
       }
 
-      session.replyCard(new SitestatsAdminTemplate(resAdmin).generation());
+      session.replyCard(new SitestatsAdminTemplate(resAdmin).generation(other.get("lang")));
     } catch (err) {
-      session.replyCard(new ErrorTemplate(err).generation());
+      session.replyCard(new ErrorTemplate(err).generation({
+        lang: other.get("lang"),
+        session
+      }));
       bot.logger.error(err);
     }
   };
@@ -40,25 +44,20 @@ class SitestatsAdmin extends AppCommand {
    * @protected
    */
   protected async getAdmin(params: any): Promise<AxiosResponse> {
-    try {
-      return new Promise(async (resolve, reject) => {
-        await axios({
-          url: this.http.address + "api/" + api.admins,
-          method: "get"
-        }).then(res => {
-          if (res.data.success === 1) {
-            return resolve(res.data);
-          }
-          reject(res);
-        }).catch(err => {
-          return reject(err);
-        });
-
+    return new Promise(async (resolve, reject) => {
+      await axios({
+        url: this.http.address + "api/" + api.admins,
+        method: "get"
+      }).then(res => {
+        if (res.data.success === 1) {
+          return resolve(res.data);
+        }
+        reject(res);
+      }).catch(err => {
+        return reject(err);
       });
-    } catch (err) {
-      bot.logger.error(err);
-      throw err;
-    }
+
+    });
   }
 }
 

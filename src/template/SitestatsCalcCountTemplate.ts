@@ -12,7 +12,7 @@ class SitestatsCalcCountTemplate {
     this.webData = data;
   }
 
-  generation({ lang = config.i18n.default }): Card {
+  generation({ lang = config.i18n.default } = {}): Card {
     let message = new Card();
     let web_data = this.webData;
 

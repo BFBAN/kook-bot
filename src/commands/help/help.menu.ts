@@ -45,7 +45,7 @@ class HelpMenu extends AppCommand {
           "content": content
         }
       })
-      .addText(i18n.t("base.button.document", other.get("lang")) + ":\n" + config.botWebSite);
+      .addText(i18n.t("base.button.document", other.get("lang")) + ":" + config.botWebSite);
 
     // set card footer
     message = new BaseFooterTemplate().add(message);

@@ -9,7 +9,7 @@ class WidgetCardTemplate {
   constructor() {
   }
 
-  generation(url: unknown, { lang = config.i18n.default }) {
+  generation(url: unknown, { lang = config.i18n.default } = {}) {
     const player_info = this.playerInfo;
     let message: Card = new Card();
 
@@ -24,7 +24,7 @@ class WidgetCardTemplate {
           "elements": [
             {
               "type": "kmarkdown",
-              "content": i18n.t("widget.description", lang)
+              "content": `${i18n.t("widget.description", lang)}:\n`
             },
             {
               "type": "kmarkdown",

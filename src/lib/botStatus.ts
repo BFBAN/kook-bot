@@ -8,7 +8,7 @@ class BotStatus {
   }
 
   /**
-   * 更改TODO事件
+   * 更改机器人'正在做'事件
    */
   changeBotGameSataus() {
     return new Promise<void>(resolve => {

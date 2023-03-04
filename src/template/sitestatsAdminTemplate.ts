@@ -14,7 +14,7 @@ class SitestatsAdminTemplate {
     this.webData = data;
   }
 
-  generation(): Card {
+  generation({ lang = config.i18n.default } = {}): Card {
     let message = new Card();
     let web_data = this.webData;
 
@@ -23,8 +23,8 @@ class SitestatsAdminTemplate {
     }
 
     message
-      .addTitle(i18n.t('sitestats.admins.title'))
-      .addText(i18n.t('sitestats.admins.description'))
+      .addTitle(i18n.t("sitestats.admins.title", lang))
+      .addText(i18n.t("sitestats.admins.description", lang))
       .addDivider();
 
     let fields: Array<any> = [
@@ -44,7 +44,7 @@ class SitestatsAdminTemplate {
     }) => {
       if (fields.length <= this.showListNumber) {
         fields.push({ "type": "kmarkdown", "content": `${i.username}` });
-        fields.push({ "type": "kmarkdown", "content": `[${i18n.t('base.button.link')}](${config.webSite}/account/${i.id})` });
+        fields.push({ "type": "kmarkdown", "content": `[${i18n.t("base.button.link", lang)}](${config.webSite}/account/${i.id})` });
       }
     });
 
@@ -58,7 +58,7 @@ class SitestatsAdminTemplate {
         }
       })
       .addDivider()
-      .addText(i18n.t('sitestats.admins.more'));
+      .addText(i18n.t("sitestats.admins.more", lang));
 
     // set card footer
     message = new BaseFooterTemplate().add(message);

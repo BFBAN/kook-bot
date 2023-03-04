@@ -13,7 +13,7 @@ class PlayerCardTemplate {
     this.playerInfo = data;
   }
 
-  generation({ lang = config.i18n.default }): Card {
+  generation({ lang = config.i18n.default } = {}): Card {
     let message: Card = new Card();
     let player_info: any = this.playerInfo;
     let player_historyName: Array<any> = [];
@@ -28,14 +28,14 @@ class PlayerCardTemplate {
     player_url = `${config.webSite}/player/${player_info.data.originPersonaId}`;
 
     // 历史名称
-    player_info.data.history.forEach((i: { originName: string; }) => {
+    player_info.data.history.forEach((i: { originName: string }) => {
       if (i.originName) {
         player_historyName.push(i.originName);
       }
     });
 
     // 作弊类型
-    player_info?.data.cheatMethods.forEach((methodsName: string | number) => {
+    player_info?.data.cheatMethods.forEach((methodsName: string) => {
       player_i18n_methods.push(i18n.t(`base.action.${methodsName}.text`, lang));
     });
 
@@ -45,7 +45,7 @@ class PlayerCardTemplate {
     });
 
     message
-      .addTitle(i18n.t("checkban.id.title"))
+      .addTitle(i18n.t("checkban.id.title", lang))
       .addDivider()
       .addModule({
         "type": "context",
@@ -63,7 +63,7 @@ class PlayerCardTemplate {
           },
           {
             "type": "kmarkdown",
-            "content": ` (${player_info.data.id}) · [${i18n.t("checkban.share",lang)}](${player_url + "/share"}) · [${i18n.t("checkban.detail", lang)}](${player_url})`
+            "content": ` (${player_info.data.id}) · [${i18n.t("checkban.share", lang)}](${player_url + "/share"}) · [${i18n.t("checkban.detail", lang)}](${player_url})`
           }
         ]
       })

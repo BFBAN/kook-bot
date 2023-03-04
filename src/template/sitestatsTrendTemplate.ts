@@ -14,7 +14,7 @@ class SitestatsTrendTemplate {
     this.trendData = data;
   }
 
-  generation(help: string): Card {
+  generation(help: string, { lang = config.i18n.default } = {}): Card {
     let message = new Card();
     let trend_data = this.trendData;
 
@@ -23,15 +23,15 @@ class SitestatsTrendTemplate {
     }
 
     message
-      .addTitle(i18n.t('sitestats.trend.title'))
+      .addTitle(i18n.t("sitestats.trend.title", lang))
       .addDivider()
       .addText(help ?? "-")
       .addDivider();
 
     // 标题
-    let fields = [{ "type": "kmarkdown", "content": "**排名**" },
-      { "type": "kmarkdown", "content": "**名称**" },
-      { "type": "kmarkdown", "content": "**热度** / **评论** / **游览**" }];
+    let fields = [{ "type": "kmarkdown", "content": `**${i18n.t('sitestats.trend.index', lang)}**` },
+      { "type": "kmarkdown", "content": `**${i18n.t('sitestats.trend.username', lang)}**` },
+      { "type": "kmarkdown", "content": `**${i18n.t('sitestats.trend.hot', lang)}** / **${i18n.t('sitestats.trend.commentsNum', lang)}** / **${i18n.t('sitestats.trend.viewNum', lang)}**` }];
     let index = 1;
 
     // 插入内容

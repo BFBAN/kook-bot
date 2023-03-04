@@ -18,7 +18,8 @@ class SearchListTemplate {
    * @param mainValue 主参
    * @param expirationTime 超时时间
    */
-  generation(other: any = null, mainValue: string = "", expirationTime: number = 0, { lang = config.i18n.default }): Card {
+  generation(other: any = null, mainValue: string = "", expirationTime: number = 0): Card {
+    let lang = other.get("lang") ?? config.i18n.default;
     let message = new Card();
     let search_list = this.searchList;
 
@@ -75,7 +76,7 @@ class SearchListTemplate {
     return message;
   }
 
-  lockWidget() {
+  lockWidget({ lang = config.i18n.default }) {
     let message = new Card();
     let search_list = this.searchList;
 
@@ -84,10 +85,10 @@ class SearchListTemplate {
     }
 
     message
-      .addTitle(i18n.t("checkban.name.title"))
-      .addText(i18n.t("checkban.name.description"))
+      .addTitle(i18n.t("checkban.name.title", lang))
+      .addText(i18n.t("checkban.name.description", lang))
       .addDivider()
-      .addText("超时操作时间，事件已释放");
+      .addText(i18n.t("checkban.name.timeoutPrompt", lang));
 
     // set card footer
     message = new BaseFooterTemplate().add(message);

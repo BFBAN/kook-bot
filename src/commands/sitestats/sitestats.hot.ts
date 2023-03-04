@@ -17,8 +17,9 @@ class SitestatsHot extends AppCommand {
   http = new Http();
 
   func: AppFunc<BaseSession> = async (session) => {
+    const { mainValue, other } = new commandPack.CommandFactory().pack(session.args);
+
     try {
-      const { mainValue, other } = new commandPack.CommandFactory().pack(session.args);
       let resTrend = await this.getTrend(other);
 
       if (resTrend.data.length <= 0 && !resTrend) {
@@ -28,7 +29,10 @@ class SitestatsHot extends AppCommand {
 
       session.replyCard(new SitestatsTrendTemplate(resTrend).generation(this.help));
     } catch (err) {
-      session.replyCard(new ErrorTemplate(err).generation());
+      session.replyCard(new ErrorTemplate(err).generation({
+        lang: other.get("lang"),
+        session
+      }));
       bot.logger.error(err);
     }
   };
@@ -40,29 +44,24 @@ class SitestatsHot extends AppCommand {
    * @protected
    */
   protected async getTrend(params: any): Promise<AxiosResponse> {
-    try {
-      return new Promise(async (resolve, reject) => {
-        await axios({
-          url: this.http.address + "api/" + api.trend,
-          method: "get",
-          params: {
-            "limit": params.get("limit") ?? 10,
-            "time": params.get("time") ?? "weekly"
-          }
-        }).then(res => {
-          if (res.data.success === 1) {
-            return resolve(res.data);
-          }
-          reject(res);
-        }).catch(err => {
-          return reject(err);
-        });
-
+    return new Promise(async (resolve, reject) => {
+      await axios({
+        url: this.http.address + "api/" + api.trend,
+        method: "get",
+        params: {
+          "limit": params.get("limit") ?? 10,
+          "time": params.get("time") ?? "weekly"
+        }
+      }).then(res => {
+        if (res.data.success === 1) {
+          return resolve(res.data);
+        }
+        reject(res);
+      }).catch(err => {
+        return reject(err);
       });
-    } catch (err) {
-      bot.logger.error(err);
-      throw err;
-    }
+
+    });
   }
 }
 

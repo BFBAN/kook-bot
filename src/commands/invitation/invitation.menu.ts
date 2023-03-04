@@ -6,7 +6,7 @@ import i18n from "../../../langage";
 class InvitationMenu extends MenuCommand {
   code = "invitation";
   trigger = "invitation";
-  help = i18n.t("invitation.help");
+  help = "invitation.help";
   menu = this.getContent();
   useCardMenu = true;
 

@@ -1,7 +1,9 @@
+import config from "../../config";
+import i18n from "../../langage";
+
 import { Card } from "kbotify";
 import { BaseFooterTemplate } from "./baseFooterTemplate";
 import { AxiosError } from "axios";
-import { bot } from "../../bot";
 
 class ErrorTemplate {
   errorContent: any = ":( I have an error";
@@ -12,7 +14,7 @@ class ErrorTemplate {
     }
   }
 
-  public generation(targetId: any = null, cmdName: string = "") {
+  public generation({ lang = config.i18n.default, session: BaseSession = {} } = {}) {
     let message = new Card({
       color: "",
       modules: [],
@@ -20,7 +22,7 @@ class ErrorTemplate {
       type: "card",
       theme: "danger"
     });
-    let content: any;
+    let content: any = "";
 
     switch (this.errorContent.constructor) {
       case String:
@@ -36,19 +38,20 @@ class ErrorTemplate {
     }
 
     message
-      .addTitle("错误")
-      .addText("请将错误发送给开发者，以帮助解决问题")
-      .addText("错误时间:" + new Date().getTime() + " cmd:" + cmdName ?? "-")
+      .addTitle(i18n.t("error.title", lang))
+      .addText(i18n.t("error.description", lang))
+      .addModule({
+        type: "section",
+        "text": {
+          "type": "kmarkdown",
+          "content": `${i18n.t("error.errorTime", lang) + ":" + new Date().getTime()}`
+        }
+      })
       .addDivider()
       .addText(content);
 
     // set card footer
     message = new BaseFooterTemplate().add(message);
-
-    if (targetId) {
-      bot.API.userChat.create(targetId);
-      console.log("创建成功");
-    }
 
     return message;
   }

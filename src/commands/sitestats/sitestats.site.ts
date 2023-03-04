@@ -16,9 +16,9 @@ class SitestatsSite extends AppCommand {
   http = new Http();
 
   func: AppFunc<BaseSession> = async (session) => {
-    try {
-      const { mainValue, other } = new commandPack.CommandFactory().pack(session.args);
+    const { mainValue, other } = new commandPack.CommandFactory().pack(session.args);
 
+    try {
       let resStatistics = await this.getStatistics(other);
 
       if (!resStatistics) {
@@ -26,9 +26,12 @@ class SitestatsSite extends AppCommand {
         return;
       }
 
-      session.replyCard(new SitestatsCalcCountTemplate(resStatistics).generation());
+      session.replyCard(new SitestatsCalcCountTemplate(resStatistics).generation(other.get("lang")));
     } catch (err) {
-      session.replyCard(new ErrorTemplate(err).generation());
+      session.replyCard(new ErrorTemplate(err).generation({
+        lang: other.get("lang"),
+        session
+      }));
       bot.logger.error(err);
     }
   };
@@ -39,33 +42,28 @@ class SitestatsSite extends AppCommand {
    * @protected
    */
   protected async getStatistics(params: any): Promise<AxiosResponse> {
-    try {
-      return new Promise(async (resolve, reject) => {
-        await axios({
-          url: this.http.address + "api/" + api.statistics,
-          method: "get",
-          params: {
-            reports: params.get("reports") ?? true,
-            players: params.get("players") ?? true,
-            confirmed: params.get("confirmed") ?? true,
-            registers: params.get("registers") ?? true,
-            banAppeals: params.get("banAppeals") ?? true,
-            from: 1514764800000
-          }
-        }).then(res => {
-          if (res.data.success === 1) {
-            return resolve(res.data);
-          }
-          reject(res);
-        }).catch(err => {
-          return reject(err);
-        });
-
+    return new Promise(async (resolve, reject) => {
+      await axios({
+        url: this.http.address + "api/" + api.statistics,
+        method: "get",
+        params: {
+          reports: params.get("reports") ?? true,
+          players: params.get("players") ?? true,
+          confirmed: params.get("confirmed") ?? true,
+          registers: params.get("registers") ?? true,
+          banAppeals: params.get("banAppeals") ?? true,
+          from: 1514764800000
+        }
+      }).then(res => {
+        if (res.data.success === 1) {
+          return resolve(res.data);
+        }
+        reject(res);
+      }).catch(err => {
+        return reject(err);
       });
-    } catch (err) {
-      bot.logger.error(err);
-      throw err;
-    }
+
+    });
   }
 }
 

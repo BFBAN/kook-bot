@@ -9,15 +9,11 @@ class WidgetMenu extends MenuCommand {
   trigger = "widget";
   help = "widget.help";
 
-  func(session: BaseSession) {
-    const { mainValue, other } = new commandPack.CommandFactory().pack(session.args);
-
-    session.replyCard(new Card()
-      .addTitle(i18n.t(this.help, other.get("lang") ?? config.i18n.default))
-      .addText(`${config.botWebSite}/docs/command/${this.trigger}`)
-      .toString());
-    return super.func(session);
-  }
+  menu = new Card()
+    .addTitle(this.code)
+    .addText(`${config.botWebSite}/docs/command/${this.trigger}`)
+    .toString();
+  useCardMenu = true;
 }
 
 export const widgetMenu = new WidgetMenu(widgetCard);

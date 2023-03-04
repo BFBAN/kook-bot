@@ -1,8 +1,6 @@
 import { Card } from "kbotify";
 import config from "../../config";
 
-// const packageConf = require("../../../package.json");
-
 class BaseFooterTemplate {
   add(card: Card) {
     card

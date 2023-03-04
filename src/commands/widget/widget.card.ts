@@ -19,24 +19,27 @@ class WidgetCard extends AppCommand {
   http = new Http();
 
   func: AppFunc<BaseSession> = async (session) => {
+    const { mainValue, other } = new commandPack.CommandFactory().pack(session.args);
+
     try {
       if (!session.args.length) {
         return session.reply(this.help);
       }
 
-      const { mainValue, other } = new commandPack.CommandFactory().pack(session.args);
-
-      if (!mainValue) {
+      if (!mainValue || !new RegExp(/^[0-9]+.?[0-9]*/).test(mainValue)) {
         session.reply(i18n.t("widget.missingValue", other.get("lang")));
       }
 
-      const tipSendId = await session.send(i18n.t("widget.missingValue", other.get("lang")));
+      const tipSendId = await session.send(i18n.t("widget.waitTip", other.get("lang")));
       const url: any = await this.generateWidget(mainValue, other);
 
       if (url) {
         session.replyCard(new WidgetCardTemplate().generation(url, other.get("lang")));
       } else {
-        session.replyCard(new ErrorTemplate(i18n.t("widget.generationError", other.get("lang"))).generation());
+        session.replyCard(new ErrorTemplate(i18n.t("widget.generationError", other.get("lang"))).generation({
+          lang: other.get("lang"),
+          session
+        }));
       }
 
       // 移除提示
@@ -44,7 +47,10 @@ class WidgetCard extends AppCommand {
         bot.API.message.delete(<string>tipSendId.msgSent?.msgId);
       }
     } catch (err) {
-      session.replyCard(new ErrorTemplate(err).generation());
+      session.replyCard(new ErrorTemplate(err).generation({
+        lang: other.get("lang"),
+        session
+      }));
       bot.logger.error(err);
     }
   };
@@ -93,7 +99,6 @@ class WidgetCard extends AppCommand {
           }).catch(err => {
             throw err;
           });
-
         }).catch(err => {
           throw err;
         }).finally(async () => {

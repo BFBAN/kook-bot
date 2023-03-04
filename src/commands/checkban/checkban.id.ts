@@ -17,12 +17,12 @@ class CheckbanId extends AppCommand {
   http = new Http();
 
   func: AppFunc<BaseSession> = async (session) => {
+    const { mainValue, other } = new commandPack.CommandFactory().pack(session.args);
+
     try {
       if (!session.args.length) {
         return session.reply(this.help);
       }
-
-      const { mainValue, other } = new commandPack.CommandFactory().pack(session.args);
 
       if (!new RegExp(/^[0-9]+.?[0-9]*/).test(mainValue)) {
         session.reply(i18n.t("checkban.id.typeError", other.get("lang")));
@@ -37,14 +37,12 @@ class CheckbanId extends AppCommand {
       }
 
       // send playerCard message
-      let id = await session.replyCard(new PlayerCardTemplate(player_info).generation(other.get("lang")));
-
-      // setTimeout(function() {
-      //   session.updateMessage(<string>id.msgSent?.msgId, "test");
-      // }, 30000);
-
+      await session.replyCard(new PlayerCardTemplate(player_info).generation(other.get("lang")));
     } catch (err) {
-      session.replyCard(new ErrorTemplate(err).generation());
+      session.replyCard(new ErrorTemplate(err).generation({
+        lang: other.get("lang"),
+        session
+      }));
       bot.logger.error(err);
     }
   };
@@ -55,31 +53,27 @@ class CheckbanId extends AppCommand {
    * @protected
    */
   protected async getPlayerInfo(id: number) {
-    try {
-      if (!id) {
-        throw "缺少id";
-      }
-
-      return new Promise(async (resolve, reject) => {
-        await axios({
-          url: this.http.address + "api/" + api.player,
-          method: "get",
-          params: {
-            "history": true,
-            "personaId": id
-          }
-        }).then(res => {
-          if (res.data.success === 1) {
-            return resolve(res.data);
-          }
-          reject(res);
-        }).catch(err => {
-          return reject(err);
-        });
-      });
-    } catch (err) {
-      bot.logger.error(err);
+    if (!id || id <= 0 || id > Number.MAX_VALUE) {
+      throw "Unexpected value";
     }
+
+    return new Promise(async (resolve, reject) => {
+      await axios({
+        url: this.http.address + "api/" + api.player,
+        method: "get",
+        params: {
+          "history": true,
+          "personaId": id
+        }
+      }).then(res => {
+        if (res.data.success === 1) {
+          return resolve(res.data);
+        }
+        reject(res);
+      }).catch(err => {
+        return reject(err);
+      });
+    });
   }
 }
 

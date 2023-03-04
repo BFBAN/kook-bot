@@ -15,7 +15,9 @@ const fieldConf = {
 class baseCommandData {
   public data: Map<any, any> = new Map<any, any>();
 
-  // 取得指令第一参数
+  /**
+   * 取得指令第一参数
+   */
   public get mainValue(): any {
     if (this.data && !this.data.has(0)) {
       return undefined;
@@ -23,15 +25,29 @@ class baseCommandData {
     return this.data?.get(0);
   };
 
-  // 取得除第一位参数外字段
-  public get other(): any {
+  /**
+   * 取得除第一位参数外字段
+   */
+  public get other(): Map<any, any> {
     let parameter: Map<any, any> = new Map();
     this.data.forEach((value, key) => {
       if (typeof key != "number") {
         parameter.set(key, value);
       }
-    })
+    });
     return parameter;
+  }
+
+  get version(): string {
+    return this.other.get("v") ?? null;
+  };
+
+  get lang(): string {
+    return this.other.get("lang") ?? null;
+  }
+
+  get debug(): string {
+    return this.other.get("debug") ?? null;
   }
 }
 

@@ -1,5 +1,4 @@
 import { bot } from "../../bot";
-import { ButtonClickEvent } from "kaiheila-bot-root";
 
 class BotEvent {
   constructor() {
