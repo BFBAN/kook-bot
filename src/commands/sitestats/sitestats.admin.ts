@@ -7,12 +7,13 @@ import SitestatsAdminTemplate from "../../template/sitestatsAdminTemplate";
 import { AppCommand, AppFunc, BaseSession } from "kbotify";
 import { bot } from "../../../bot";
 import { ErrorTemplate } from "../../template/errorTemplate";
+import i18n from "../../../langage";
 
 class SitestatsAdmin extends AppCommand {
   code = "admin";
   trigger = "admin";
   help = ".sitestats admin";
-  intro = "查询网站管理员数量";
+  intro = "sitestats.admins.intro";
   http = new Http();
 
   func: AppFunc<BaseSession> = async (session) => {
@@ -22,8 +23,8 @@ class SitestatsAdmin extends AppCommand {
       let resAdmin = await this.getAdmin(other);
 
       if (!resAdmin) {
-        session.reply('抱歉，没有找到数据');
-        return ;
+        session.reply(i18n.t("sitestats.admins.notContent", other.get("lang")));
+        return;
       }
 
       session.replyCard(new SitestatsAdminTemplate(resAdmin).generation());

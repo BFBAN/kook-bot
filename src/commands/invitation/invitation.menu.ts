@@ -1,11 +1,12 @@
 import { Card, MenuCommand } from "kbotify";
 import config from "../../../config";
 import { BaseFooterTemplate } from "../../template/baseFooterTemplate";
+import i18n from "../../../langage";
 
 class InvitationMenu extends MenuCommand {
   code = "invitation";
   trigger = "invitation";
-  help = "邀请机器人";
+  help = i18n.t("invitation.help");
   menu = this.getContent();
   useCardMenu = true;
 

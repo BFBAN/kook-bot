@@ -1,5 +1,5 @@
 import { Card } from "kbotify";
-import i18n from "../../i18n";
+import i18n from "../../langage";
 import Http from "../lib/http";
 import { BaseFooterTemplate } from "./baseFooterTemplate";
 import config from "../../config";
@@ -18,7 +18,7 @@ class SearchListTemplate {
    * @param mainValue 主参
    * @param expirationTime 超时时间
    */
-  generation(other: any = null, mainValue: string = "", expirationTime: number = 0): Card {
+  generation(other: any = null, mainValue: string = "", expirationTime: number = 0, { lang = config.i18n.default }): Card {
     let message = new Card();
     let search_list = this.searchList;
 
@@ -27,8 +27,8 @@ class SearchListTemplate {
     }
 
     message
-      .addTitle(i18n.translation.cheackban.name.title)
-      .addText(i18n.translation.cheackban.name.description)
+      .addTitle(i18n.t("checkban.name.title", lang))
+      .addText(i18n.t("checkban.name.description", lang))
       .addDivider()
       .addModule({
         type: "section",
@@ -47,18 +47,19 @@ class SearchListTemplate {
         "accessory": {
           "type": "button",
           "theme": "primary",
+          "click": "return-val",
           "value": JSON.stringify({
             uid: i.originPersonaId,
             eventType: "search.list.select"
           }),
           "text": {
             "type": "plain-text",
-            "content": "select"
+            "content": i18n.t("checkban.select", lang)
           }
         },
         "text": {
           "type": "kmarkdown",
-          "content": `${index}\t${i.historyName}`
+          "content": `${index} \t ${i.historyName}`
         }
       });
     }
@@ -83,8 +84,8 @@ class SearchListTemplate {
     }
 
     message
-      .addTitle(i18n.translation.cheackban.name.title)
-      .addText(i18n.translation.cheackban.name.description)
+      .addTitle(i18n.t("checkban.name.title"))
+      .addText(i18n.t("checkban.name.description"))
       .addDivider()
       .addText("超时操作时间，事件已释放");
 

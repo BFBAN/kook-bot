@@ -12,7 +12,7 @@ class SitestatsSite extends AppCommand {
   code = "site";
   trigger = "site";
   help = ".sitestats site (reports:true) (players:true) (confirmed:true) (registers:true) (banAppeals:true)";
-  intro = "查询网站各项统计";
+  intro = "sitestats.site.intro";
   http = new Http();
 
   func: AppFunc<BaseSession> = async (session) => {

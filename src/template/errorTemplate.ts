@@ -12,7 +12,7 @@ class ErrorTemplate {
     }
   }
 
-  public generation(targetId: any = null, cmdName: string = '') {
+  public generation(targetId: any = null, cmdName: string = "") {
     let message = new Card({
       color: "",
       modules: [],
@@ -23,6 +23,10 @@ class ErrorTemplate {
     let content: any;
 
     switch (this.errorContent.constructor) {
+      case String:
+        content = this.errorContent;
+        break;
+      case Array:
       case AxiosError:
         content = this.errorContent.toString();
         break;
@@ -34,7 +38,7 @@ class ErrorTemplate {
     message
       .addTitle("错误")
       .addText("请将错误发送给开发者，以帮助解决问题")
-      .addText("错误时间:" + new Date().getTime() + " cmd:" + cmdName ?? '-')
+      .addText("错误时间:" + new Date().getTime() + " cmd:" + cmdName ?? "-")
       .addDivider()
       .addText(content);
 

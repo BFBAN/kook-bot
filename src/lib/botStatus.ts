@@ -18,7 +18,7 @@ class BotStatus {
         headers: {
           "Authorization": `Bot ${config.kookAuth.khltoken}`
         },
-        data: { "software": "cloudmusic", "singer": config.name, "music_name": config.botWebSite, "data_type": 2 }
+        data: { "software": "cloudmusic", "singer": config.name, "music_name": ".help", "data_type": 2 }
       }).then(res => {
         resolve();
       }).catch(err => {

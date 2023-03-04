@@ -1,8 +1,9 @@
-import i18n from "../../i18n";
+import config from "../../config";
+
+import i18n from "../../langage";
 import Http from "../lib/http";
 import { Card } from "kbotify";
 import { BaseFooterTemplate } from "./baseFooterTemplate";
-import * as constants from "constants";
 
 class PlayerCardTemplate {
   playerInfo: any;
@@ -12,47 +13,39 @@ class PlayerCardTemplate {
     this.playerInfo = data;
   }
 
-  generation(): Card {
+  generation({ lang = config.i18n.default }): Card {
     let message: Card = new Card();
     let player_info: any = this.playerInfo;
-    let player_historyName: string = "";
+    let player_historyName: Array<any> = [];
     let player_url: string = "";
-    let player_i18n_status: Array<any> = [];
+    let player_i18n_methods: Array<any> = [];
     let player_i18n_games: Array<any> = [];
 
     if (!player_info) {
       return message;
     }
 
-    player_url = `${this.http.address}player/${player_info.data.originPersonaId}](${this.http.address}player/${player_info.data.originPersonaId}`;
+    player_url = `${config.webSite}/player/${player_info.data.originPersonaId}`;
 
     // 历史名称
     player_info.data.history.forEach((i: { originName: string; }) => {
       if (i.originName) {
-        player_historyName += i.originName + ",";
+        player_historyName.push(i.originName);
       }
     });
 
     // 作弊类型
     player_info?.data.cheatMethods.forEach((methodsName: string | number) => {
-      if (i18n.translation.base.action[methodsName]) {
-        player_i18n_status.push(i18n.translation.base.action[methodsName].text);
-      } else {
-        player_i18n_status.push(methodsName);
-      }
+      player_i18n_methods.push(i18n.t(`base.action.${methodsName}.text`, lang));
     });
 
     // 游戏类型
     player_info?.data.games.forEach((gameKey: string | number) => {
-      if (i18n.translation.base.games[gameKey]) {
-        player_i18n_games.push(i18n.translation.base.games[gameKey]);
-      } else {
-        player_i18n_games.push(gameKey);
-      }
+      player_i18n_games.push(i18n.t(`base.games.${gameKey}`, lang));
     });
 
     message
-      .addTitle(i18n.translation.cheackban.id.title)
+      .addTitle(i18n.t("checkban.id.title"))
       .addDivider()
       .addModule({
         "type": "context",
@@ -70,7 +63,7 @@ class PlayerCardTemplate {
           },
           {
             "type": "kmarkdown",
-            "content": ` (${player_info.data.id}) · [分享](${player_url + "/share"}) · [详情](${player_url})`
+            "content": ` (${player_info.data.id}) · [${i18n.t("checkban.share",lang)}](${player_url + "/share"}) · [${i18n.t("checkban.detail", lang)}](${player_url})`
           }
         ]
       })
@@ -83,27 +76,27 @@ class PlayerCardTemplate {
           "fields": [
             {
               "type": "kmarkdown",
-              "content": `**状态**\n(font)${i18n.translation.base.status[player_info?.data.status]}(font)[success]`
+              "content": `**${i18n.t("checkban.status", lang)}**\n(font)${i18n.t(`base.status.${player_info?.data.status}`)}(font)[success]`
             },
             {
               "type": "kmarkdown",
-              "content": "**游戏**\n`" + player_i18n_games.toString() + "`"
+              "content": `**${i18n.t("checkban.games", lang)}**\n\`${player_i18n_games.toString()}\``
             },
             {
               "type": "kmarkdown",
-              "content": `**类型**\n${player_i18n_status.toString()}`
+              "content": `**${i18n.t("checkban.methods", lang)}**\n${player_i18n_methods.toString()}`
             },
             {
               "type": "kmarkdown",
-              "content": `**浏览次数**\n${player_info?.data.viewNum}`
+              "content": `**${i18n.t("checkban.methods", lang)}**\n${player_info?.data.viewNum}`
             },
             {
               "type": "kmarkdown",
-              "content": `**评论**\n${player_info?.data.commentsNum}`
+              "content": `**${i18n.t("checkban.commentsNum", lang)}**\n${player_info?.data.commentsNum}`
             },
             {
               "type": "kmarkdown",
-              "content": `**游戏id**\n${player_info?.data.originPersonaId}`
+              "content": `**${i18n.t("checkban.gameId", lang)}**\n${player_info?.data.originPersonaId}`
             }
 
           ]
@@ -117,17 +110,17 @@ class PlayerCardTemplate {
           "fields": [
             {
               "type": "kmarkdown",
-              "content": `**创建时间**\n${player_info?.data.createTime}`
+              "content": `**${i18n.t("checkban.createTime", lang)}**\n${player_info?.data.createTime}`
             },
             {
               "type": "kmarkdown",
-              "content": `**更新时间**\n${player_info?.data.updateTime}`
+              "content": `**${i18n.t("checkban.updateTime", lang)}**\n${player_info?.data.updateTime}`
             }
           ]
         }
       })
       .addDivider()
-      .addText(`历史名称: ${player_historyName}`);
+      .addText(`${i18n.t("checkban.historyName", lang)}: ${player_historyName.toString()}`);
 
     // set card footer
     message = new BaseFooterTemplate().add(message);

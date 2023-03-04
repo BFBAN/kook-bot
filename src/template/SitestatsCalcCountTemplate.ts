@@ -1,7 +1,8 @@
 import Http from "../lib/http";
 import { Card } from "kbotify";
-import i18n from "../../i18n";
+import i18n from "../../langage";
 import { BaseFooterTemplate } from "./baseFooterTemplate";
+import config from "../../config";
 
 class SitestatsCalcCountTemplate {
   webData: any;
@@ -11,7 +12,7 @@ class SitestatsCalcCountTemplate {
     this.webData = data;
   }
 
-  generation(): Card {
+  generation({ lang = config.i18n.default }): Card {
     let message = new Card();
     let web_data = this.webData;
 
@@ -20,7 +21,7 @@ class SitestatsCalcCountTemplate {
     }
 
     message
-      .addTitle(i18n.translation.sitestats.trend.title)
+      .addTitle(i18n.t("sitestats.trend.title", lang))
       .addDivider()
       .addModule({
         type: "section",
@@ -30,23 +31,23 @@ class SitestatsCalcCountTemplate {
           "fields": [
             {
               "type": "kmarkdown",
-              "content": `**社区共计已举报**\n${web_data?.data.reports || 0}`
+              "content": `**${i18n.t("sitestats.reports", lang)}**\n${web_data?.data.reports || 0}`
             },
             {
               "type": "kmarkdown",
-              "content": `**现有举报案件**\n${web_data?.data.confirmed || 0}`
+              "content": `**${i18n.t("sitestats.players", lang)}**\n${web_data?.data.players || 0}`
             },
             {
               "type": "kmarkdown",
-              "content": `**已上诉**\n${web_data?.data.banAppeals || 0}`
+              "content": `**${i18n.t("sitestats.banAppealse", lang)}**\n${web_data?.data.banAppeals || 0}`
             },
             {
               "type": "kmarkdown",
-              "content": `**注册用户**\n${web_data?.data.registers || 0}`
+              "content": `**${i18n.t("sitestats.registers", lang)}**\n${web_data?.data.registers || 0}`
             },
             {
               "type": "kmarkdown",
-              "content": `**已处理案件**\n${web_data?.data.confirmed || 0}`
+              "content": `**${i18n.t("sitestats.confirmed", lang)}**\n${web_data?.data.confirmed || 0}`
             }
           ]
         }

@@ -7,12 +7,13 @@ import { AppCommand, AppFunc, BaseSession, Card } from "kbotify";
 import { bot } from "../../../bot";
 import { PlayerCardTemplate } from "../../template/playerCardTemplate";
 import { ErrorTemplate } from "../../template/errorTemplate";
+import i18n from "../../../langage";
 
 class CheckbanId extends AppCommand {
   code = "id";
   trigger = "id";
-  help = ".cheackban id [id:number]";
-  intro = "使用id查询案件";
+  help = ".checkban id [id:number]";
+  intro = "checkban.id.intro";
   http = new Http();
 
   func: AppFunc<BaseSession> = async (session) => {
@@ -24,23 +25,23 @@ class CheckbanId extends AppCommand {
       const { mainValue, other } = new commandPack.CommandFactory().pack(session.args);
 
       if (!new RegExp(/^[0-9]+.?[0-9]*/).test(mainValue)) {
-        session.reply(`检查您的参数非数字`);
+        session.reply(i18n.t("checkban.id.typeError", other.get("lang")));
         return;
       }
 
       let player_info = await this.getPlayerInfo(mainValue);
 
       if (!player_info) {
-        session.reply("没有找到玩家");
+        session.reply(i18n.t("checkban.id.notSuchPlayer", other.get("lang")));
         return;
       }
 
       // send playerCard message
-      let id = await session.replyCard(new PlayerCardTemplate(player_info).generation());
+      let id = await session.replyCard(new PlayerCardTemplate(player_info).generation(other.get("lang")));
 
-      setTimeout(function() {
-        session.updateMessage(<string>id.msgSent?.msgId, "test");
-      }, 30000);
+      // setTimeout(function() {
+      //   session.updateMessage(<string>id.msgSent?.msgId, "test");
+      // }, 30000);
 
     } catch (err) {
       session.replyCard(new ErrorTemplate(err).generation());

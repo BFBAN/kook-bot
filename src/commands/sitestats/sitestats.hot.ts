@@ -7,12 +7,13 @@ import SitestatsTrendTemplate from "../../template/sitestatsTrendTemplate";
 import { AppCommand, AppFunc, BaseSession, Card } from "kbotify";
 import { bot } from "../../../bot";
 import { ErrorTemplate } from "../../template/errorTemplate";
+import i18n from "../../../langage";
 
 class SitestatsHot extends AppCommand {
   code = "hot";
   trigger = "hot";
   help = ".sitestats hot (limit:10) (limit:weekly)";
-  intro = "查询网站近期热门案件";
+  intro = "sitestats.hot.intro";
   http = new Http();
 
   func: AppFunc<BaseSession> = async (session) => {
@@ -21,7 +22,7 @@ class SitestatsHot extends AppCommand {
       let resTrend = await this.getTrend(other);
 
       if (resTrend.data.length <= 0 && !resTrend) {
-        session.reply("抱歉，没有找到数据");
+        session.reply(i18n.t("sitestats.hot.notContent", other.get("lang")));
         return;
       }
 

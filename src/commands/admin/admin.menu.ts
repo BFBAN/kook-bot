@@ -1,13 +1,18 @@
 import { Card, MenuCommand } from "kbotify";
 import { adminBotOffline } from "./admin.botoffline";
+import config from "../../../config";
+import i18n from "../../../langage";
 
 class AdminMenu extends MenuCommand {
   code = "admin";
   trigger = "admin";
-  help = "管理机器人";
+  help = "";
 
-  menu = new Card().addText(this.help).toString();
-  useCardMenu = true; // 使用卡片菜单
+  menu = new Card()
+    .addTitle(this.code)
+    .addText(`${config.botWebSite}/docs/command/${this.trigger}`)
+    .toString();
+  useCardMenu = true;
 }
 
 export const adminMenu = new AdminMenu(adminBotOffline);

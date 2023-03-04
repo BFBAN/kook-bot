@@ -52,32 +52,84 @@
       "bf1": "战地风云 1",
       "bfv": "战地风云 5",
       "bf6": "战地风云 2042"
+    },
+    "button": {
+      "link": "链接",
+      "document": "文档"
     }
   },
-  "cheackban": {
+  "help": {
+    "help": "指令帮助"
+  },
+  "admin": {
+    "help": "管理机器人"
+  },
+  "checkban": {
+    "help": "检查玩家",
     "name": {
       "title": "存在多个结果",
-      "description": "请输入对应玩家下标，来查询；下方截取部分结果"
+      "description": "请输入对应玩家下标，来查询；下方截取部分结果",
+      "intro": "使用名称查询玩家状态",
+      "noContent": "抱歉，我没有找到任何结果",
+      "typeError": "请输入数字，且存在上方数字内"
     },
     "id": {
-      "title": "检测玩家状态"
+      "title": "检测玩家状态",
+      "intro": "使用id查询案件",
+      "typeError": "检查您的参数非数字",
+      "notSuchPlayer": "找不到此玩家"
     },
+    "select": "选择",
+    "share": "分享",
+    "detail": "详情",
     "idTyperError": "id类型必须是数字",
     "idLengthError": "id长度不符合，请在最短5到最大50范围内",
     "username": "名称",
     "status": "状态",
     "updateTime": "更新时间",
     "createTime": "创建时间",
-    "games": "游戏"
+    "games": "游戏",
+    "methods": "类型",
+    "viewNum": "游览次数",
+    "commentsNum": "评论",
+    "gameId": "游戏id",
+    "historyName": "历史名称"
   },
   "sitestats": {
+    "help": "",
+    "hot": {
+      "intro":"查询网站近期热门案件",
+      "notContent": "暂无排行数据"
+    },
     "trend": {
       "title": "热门案件"
     },
     "admins": {
       "title": "管理员",
+      "intro":"查询网站管理员数量",
       "description": "下方截取部分结果",
-      "more": "查阅更多请前往网站统计"
-    }
+      "more": "查阅更多请前往网站统计",
+      "notContent": "抱歉，没有找到数据"
+    },
+    "site": {
+      "intro": "查询网站各项统计"
+    },
+    "reports": "社区共计已举报",
+    "players": "现有举报案件",
+    "banAppealse": "已上诉",
+    "registers": "注册用户",
+    "confirmed": "已处理案件"
+  },
+  "invitation": {
+    "help": "邀请机器人"
+  },
+  "widget": {
+    "help": "",
+    "intro": "生成分享卡片",
+    "title": "部件",
+    "description": "已生成卡片，你可以复制下方链接\n",
+    "missingValue": "请补全指令值",
+    "waitTip": "生成可能比较慢，请耐心等待",
+    "generationError": "生成失败"
   }
 }

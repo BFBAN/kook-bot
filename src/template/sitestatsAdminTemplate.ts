@@ -1,6 +1,6 @@
 import Http from "../lib/http";
 import { Card } from "kbotify";
-import i18n from "../../i18n";
+import i18n from "../../langage";
 import { BaseFooterTemplate } from "./baseFooterTemplate";
 import config from "../../config";
 
@@ -23,8 +23,8 @@ class SitestatsAdminTemplate {
     }
 
     message
-      .addTitle(i18n.translation.sitestats.admins.title)
-      .addText(i18n.translation.sitestats.admins.description)
+      .addTitle(i18n.t('sitestats.admins.title'))
+      .addText(i18n.t('sitestats.admins.description'))
       .addDivider();
 
     let fields: Array<any> = [
@@ -44,7 +44,7 @@ class SitestatsAdminTemplate {
     }) => {
       if (fields.length <= this.showListNumber) {
         fields.push({ "type": "kmarkdown", "content": `${i.username}` });
-        fields.push({ "type": "kmarkdown", "content": `[链接](${config.webSite}/account/${i.id})` });
+        fields.push({ "type": "kmarkdown", "content": `[${i18n.t('base.button.link')}](${config.webSite}/account/${i.id})` });
       }
     });
 
@@ -58,7 +58,7 @@ class SitestatsAdminTemplate {
         }
       })
       .addDivider()
-      .addText(i18n.translation.sitestats.admins.more);
+      .addText(i18n.t('sitestats.admins.more'));
 
     // set card footer
     message = new BaseFooterTemplate().add(message);

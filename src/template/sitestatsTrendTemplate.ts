@@ -1,6 +1,6 @@
 import Http from "../lib/http";
 import { Card } from "kbotify";
-import i18n from "../../i18n";
+import i18n from "../../langage";
 import { BaseFooterTemplate } from "./baseFooterTemplate";
 import config from "../../config";
 
@@ -23,7 +23,7 @@ class SitestatsTrendTemplate {
     }
 
     message
-      .addTitle(i18n.translation.sitestats.trend.title)
+      .addTitle(i18n.t('sitestats.trend.title'))
       .addDivider()
       .addText(help ?? "-")
       .addDivider();
