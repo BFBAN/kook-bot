@@ -69,12 +69,13 @@ class WidgetCard extends AppCommand {
     }
 
     return new Promise(async (resolve, reject) => {
-      const browser = await puppeteer.launch();
+      const browser = await puppeteer.launch({ args: ["--no-sandbox"] });
       const page = await browser.newPage();
       const pageUrl = `${config.webSite}/player/${id}/share/card?full=true&theme=${theme ?? "default"}&lang=${lang ?? config.i18n.default}`;
+      bot.logger.info(pageUrl);
 
-      // 设置超时30秒
-      page.setDefaultTimeout(1000 * 30);
+      // 设置超时2分钟
+      page.setDefaultTimeout(1000 * 60 * 2);
 
       // goto
       await page.goto(pageUrl);
@@ -83,7 +84,10 @@ class WidgetCard extends AppCommand {
       await page.setViewport({ width: width ?? 349, height: height ?? 280 });
 
       // Wait load
-      await page.waitForFunction("window.widgetReady == true");
+      await page.waitForFunction("window.widgetReady == true")
+        .catch(err => {
+          throw err;
+        });
 
       // screenshot
       await page.screenshot({ type: "jpeg", path: "", omitBackground: true, encoding: "binary" })

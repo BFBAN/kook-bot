@@ -15,16 +15,16 @@ import botEvent from "./src/lib/botEvent";
 import botStatus from "./src/lib/botStatus";
 import botMarket from "./src/lib/botMarket";
 
-class Main {
-  protected mode: any = [botStatus, botEvent, botMarket];
-  protected commands: any = [helpMenu, checkbanMenu, sitestatsMenu, widgetMenu, invitationMenu];
+try {
+  class Main {
+    protected mode: any = [botStatus, botEvent, botMarket];
+    protected commands: any = [helpMenu, checkbanMenu, sitestatsMenu, widgetMenu, invitationMenu];
 
-  constructor() {
-    this.ready();
-  }
+    constructor() {
+      this.ready();
+    }
 
-  ready() {
-    try {
+    ready() {
       if (config.__DEBUG__) {
         this.commands.concat(exampleMenu);
       }
@@ -46,10 +46,10 @@ class Main {
 
       bot.logger.info("Initialization: " + config.name + " initialization start");
       console.log("Initialization: " + config.name + " initialization start");
-    } catch (err) {
-      bot.logger.error(err);
     }
   }
-}
 
-new Main();
+  new Main();
+} catch (err) {
+  bot.logger.error(err);
+}
