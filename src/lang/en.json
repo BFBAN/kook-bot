@@ -1,1 +1,147 @@
-{}
+{
+  "base": {
+    "action": {
+      "suspect": {
+        "text": "waiting for self-proof",
+        "describe": "the player's career data is abnormal or the single-game data is seriously inconsistent with his career, and there is a suspicion of opening and hanging. Members of the identification team require the player to prove himself or to give self-proof time after the player has submitted a self-certificate statement. From the status start date to 7 days later, if the self-proof is not successful, it will be automatically transferred to the real hammer."
+      },
+      "innocent": {
+        "text": "MOSS self-certification",
+        "describe": "cleared the suspect of the reported information by video."
+      },
+      "discuss": {
+        "text": "for discussion",
+        "describe": "the above evidence still requires more administrators and players to participate in discussions and decisions, uncertain behavior."
+      },
+      "guilt": {
+        "text": "cast a vote for stone hammer",
+        "describe": "if the administrator thinks that he is cheating, cast a vote and meet the conditions, the system will confirm the player's status."
+      },
+      "kill": {
+        "text": "stone hammer",
+        "describe": "Manager judges Stone Hammer"
+      },
+      "invalid": {
+        "text": "invalid report",
+        "describe": "reporting acts such as incomplete information or reporting incorrect ID"
+      },
+      "more": {
+        "text": "need more evidence",
+        "describe": "need to add more strong evidence"
+      },
+      "farm": {
+        "text": "brush gun",
+        "describe": "brush gun"
+      }
+    },
+    "status": {
+      "- 1": "none",
+      "all": "all",
+      "0": "not handled",
+      "1": "stone Hammer",
+      "2": "waiting for self-proof",
+      "3": "MOSS self-certification",
+      "4": "invalid report",
+      "5": "under discussion",
+      "6": "more management votes are needed",
+      "7": "data abnormal automatic stone hammer",
+      "8": "brush the gun"
+    },
+    "games": {
+      "all": "all",
+      "bf1": "Battlefield 1",
+      "bfv": "Battlefield 5",
+      "bf6": "Battlefield 2042"
+    },
+    "button": {
+      "link": "Link",
+      "document": "document"
+    }
+  },
+  "error": {
+    "title": "error",
+    "description": "Please send the error to the developer to help solve the problem",
+    "errorTime": "wrong time"
+  },
+  "help": {
+    "help": "instruction help"
+  },
+  "admin": {
+    "help": "Management Robot"
+  },
+  "checkban": {
+    "help": "check players",
+    "name": {
+      "title": "there are multiple results",
+      "description": "enter the corresponding player subscript to query; intercept some of the results below",
+      "intro": "query player status using name",
+      "noContent": "Sorry, I didn't find any results.",
+      "typeError": "Please enter a number, and it exists in the number above",
+      "timeoutPrompt": "timeout operation time, event released",
+      "underLengthError": "the input length is not enough, at least 3 characters"
+    },
+    "id": {
+      "title": "check player status",
+      "intro": "use id to query cases",
+      "typeError": "check that your parameter is non-numeric",
+      "notSuchPlayer": "this player cannot be found"
+    },
+    "select": "Select",
+    "share": "share",
+    "detail": "details",
+    "idTyperError": "id type must be numeric",
+    "idLengthError": "id length does not match, please be in the range of minimum 5 to maximum 50",
+    "username": "name",
+    "status": "status",
+    "updateTime": "Update time",
+    "createTime": "creation time",
+    "games": "Game",
+    "methods": "Type",
+    "viewNum": "number of tours",
+    "commentsNum": "comment",
+    "gameId": "Game id",
+    "historyName": "Historical name"
+  },
+  "sitestats": {
+    "help": "",
+    "hot": {
+      "intro": "query recent hot cases on the website",
+      "notContent": "No ranking data available"
+    },
+    "trend": {
+      "title": "Hot cases",
+      "index": "ranking",
+      "username": "name",
+      "hot": "Hot",
+      "commentsNum": "comment",
+      "viewNum": "tour"
+    },
+    "admins": {
+      "title": "Administrator",
+      "intro": "query the number of webmasters",
+      "description": "intercept some results below",
+      "more": "for more information, please go to the website statistics",
+      "notContent": "Sorry, no data found"
+    },
+    "site": {
+      "intro": "query website statistics"
+    },
+    "reports": "Total reported by the community",
+    "players": "existing reported cases",
+    "banAppealse": "appealed",
+    "registers": "registered user",
+    "confirmed": "cases handled"
+  },
+  "invitation": {
+    "help": "invite Robot"
+  },
+  "widget": {
+    "help": "",
+    "intro": "generate sharing cards",
+    "title": "parts",
+    "description": "the card has been generated, you can copy the link below\n",
+    "missingValue": "Please complete the instruction value",
+    "waitTip": "the generation may be slow, please wait patiently",
+    "generationError": "build failed"
+  }
+}

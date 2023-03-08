@@ -7,13 +7,22 @@ class I18n {
     this.lang = data;
   }
 
-  t(n: any, l: string = config.i18n.default) {
-    const langObject = this.lang[l] ?? {};
-    const t = this.i(n.split("."), langObject);
-    return t ?? n;
+  public t(n: any, l: string = config.i18n.default) {
+    try {
+      if (config.languages.indexOf(l) < 0) {
+        throw "No corresponding translation found, only support:" + config.languages.toString()
+        return
+      }
+
+      const langObject = this.lang[l] ?? {};
+      const t = this.i(n.split("."), langObject);
+      return t ?? n;
+    } catch (err) {
+      console.log(err);
+    }
   }
 
-  i(p: Array<any>, o: Object) {
+  private i(p: Array<any>, o: Object) {
     return p.reduce(function(xs: any, x: any) {
       return (xs && xs[x]) ? xs[x] : null;
     }, o);

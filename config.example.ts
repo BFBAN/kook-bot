@@ -4,6 +4,9 @@ const config = {
   address: "0.0.0.0",
   port: 5000,
 
+  version: "0.0.1",
+  languages: ["en-US", "zh-CN"],
+
   // KOOK 鉴权钥匙
   // 前往 https://www.kookapp.cn/app 创建机器人取得
   "kookAuth": {

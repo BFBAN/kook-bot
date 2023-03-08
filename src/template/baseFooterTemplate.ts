@@ -17,8 +17,8 @@ class BaseFooterTemplate {
             "content": "bfban 2018-" + new Date().getFullYear()
           },
           {
-            "type": "plain-text",
-            "content": ` - ${config.site.protocol}://${config.site.origin}`
+            "type": "kmarkdown",
+            "content": ` - [${config.name}](${config.site.protocol}://${config.site.origin}) - v:${config.version}`
           }
         ]
       });

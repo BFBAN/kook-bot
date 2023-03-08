@@ -51,7 +51,11 @@ class CheckbanName extends AppCommand {
       if (resSearch.data.length > 1) {
         // 监听按钮
         bot.on("buttonClick", async event => {
-          if (event.targetMsgId == replyId.msgSent.msgId && event.type == "buttonClick") {
+          if (
+            event.targetMsgId == replyId.msgSent.msgId &&
+            event.type == "buttonClick" &&
+            session.userId == event.userId
+          ) {
             const selectItemData = JSON.parse(event.value);
             await that.sendPlayerCard(
               resSearch,
@@ -68,6 +72,9 @@ class CheckbanName extends AppCommand {
           let selectNumber = Number(msg.content);
           // 选择器仅在0到搜索结果长度之内
           if (selectNumber >= 0 && selectNumber <= (other.get("limit") ?? 5)) {
+            if (!resSearch.data[selectNumber].get('originPersonaId'))
+              await session.reply(i18n.t("checkban.name.typeError", other.get("lang")));
+
             await that.sendPlayerCard(
               resSearch,
               resSearch.data[selectNumber].originPersonaId,
@@ -92,11 +99,15 @@ class CheckbanName extends AppCommand {
 
       // 仅一条数据，默认查询
       else if (resSearch.data.length <= 1) {
-        let default_player_info = await that.getPlayerInfo(resSearch.data[0].originPersonaId);
-
         // 发送玩家卡片
-        if (default_player_info) {
-          replyId = await session.replyCard(new PlayerCardTemplate(default_player_info).generation(other.get("lang")));
+        if (resSearch.data[0]) {
+          await that.sendPlayerCard(
+            resSearch,
+            resSearch.data[0].originPersonaId,
+            replyId.msgSent.msgId,
+            other,
+            session
+          );
         } else {
           await session.reply(i18n.t("checkban.name.noContent", other.get("lang")));
         }

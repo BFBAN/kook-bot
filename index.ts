@@ -14,6 +14,7 @@ import { widgetMenu } from "./src/commands/widget/widget.menu";
 import botEvent from "./src/lib/botEvent";
 import botStatus from "./src/lib/botStatus";
 import botMarket from "./src/lib/botMarket";
+import { AppCommand, MenuCommand } from "kbotify";
 
 try {
   class Main {
@@ -41,6 +42,17 @@ try {
       bot.logger.addStream({ level: "error", stream: errorLogStream });
       bot.logger.addStream({ level: "info", stream: infoLogStream });
 
+      bot.help = "/"
+      // bot.processMsg=(msg)=>{
+      //   console.log(msg);
+      //
+      //   if (msg.content[0].indexOf("/") >= 0) {
+      //     bot.commandMap.forEach(i => {
+      //       if (i.trigger == "")
+      //     })
+      //   }
+      // }
+
       bot.addCommands(...this.commands);
       bot.connect();
 
@@ -51,5 +63,6 @@ try {
 
   new Main();
 } catch (err) {
+  console.log(err);
   bot.logger.error(err);
 }
