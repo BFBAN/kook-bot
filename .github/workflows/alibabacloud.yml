@@ -33,7 +33,7 @@ env:
   ACK_CLUSTER_ID: clusterID
   ACK_DEPLOYMENT_NAME: nginx-deployment
 
-  ACR_EE_REGISTRY: myregistry.cn-qingdao.cr.aliyuncs.com
+  ACR_EE_REGISTRY: registry.cn-qingdao.aliyuncs.com/bfban/kook-bot
   ACR_EE_INSTANCE_ID: instanceID
   ACR_EE_NAMESPACE: kook-bot
   ACR_EE_IMAGE: repo
