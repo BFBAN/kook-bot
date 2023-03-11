@@ -1,14 +1,14 @@
 # bfban-kook-bot
-一款kook平台机器人，快速的查询案件状态以及生成widget
+A kook platform robot that quickly queries case status and generates widgets
 
 
-[官网](https://cabbagelol.github.io/kook-bot-docs)
+[Documents and websites](https://cabbagelol.github.io/kook-bot-docs)
 
-支持: [kBotify](https://github.com/fi6/kBotify) | [kbotify-template](https://github.com/fi6/kbotify-template) 
+support: [kBotify](https://github.com/fi6/kBotify) | [kbotify-template](https://github.com/fi6/kbotify-template) 
 
 ---
 
-## 开发
+## develop
 
 ```
 npm i -g

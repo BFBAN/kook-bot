@@ -105,15 +105,15 @@ class PlayerCardTemplate {
             },
             {
               "type": "kmarkdown",
-              "content": `**${i18n.t("checkban.viewNum", lang)}**\n${player_info?.data.viewNum}`
+              "content": `**${i18n.t("checkban.viewNum", lang)}**\n${player_info?.data.viewNum ?? 0}`
             },
             {
               "type": "kmarkdown",
-              "content": `**${i18n.t("checkban.commentsNum", lang)}**\n${player_info?.data.commentsNum}`
+              "content": `**${i18n.t("checkban.commentsNum", lang)}**\n${player_info?.data.commentsNum ?? 0}`
             },
             {
               "type": "kmarkdown",
-              "content": `**${i18n.t("checkban.gameId", lang)}**\n${player_info?.data.originPersonaId}`
+              "content": `**${i18n.t("checkban.gameId", lang)}**\n${player_info?.data.originPersonaId ?? '-'}`
             }
 
           ]
