@@ -21,6 +21,8 @@ class BotMarket {
    * botMarket 心跳
    */
   upDateOnline() {
+    if (config.botMarket && config.botMarket.uuid) return;
+
     axios({
       url: `http:/${config.botMarket.origin}/api/v1/online.bot`,
       method: "get",
