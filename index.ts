@@ -14,11 +14,11 @@ import { widgetMenu } from "./src/commands/widget/widget.menu";
 import botEvent from "./src/lib/botEvent";
 import botStatus from "./src/lib/botStatus";
 import botMarket from "./src/lib/botMarket";
-import { AppCommand, MenuCommand } from "kbotify";
+import { SentryManagement } from "./src/lib/sentry";
 
 try {
   class Main {
-    protected mode: any = [botStatus, botEvent, botMarket];
+    protected mode: any = [SentryManagement, botStatus, botEvent, botMarket];
     protected commands: any = [helpMenu, checkbanMenu, sitestatsMenu, widgetMenu, invitationMenu];
 
     constructor() {
@@ -42,7 +42,7 @@ try {
       bot.logger.addStream({ level: "error", stream: errorLogStream });
       bot.logger.addStream({ level: "info", stream: infoLogStream });
 
-      bot.help = "/"
+      bot.help = "/";
       // bot.processMsg=(msg)=>{
       //   console.log(msg);
       //

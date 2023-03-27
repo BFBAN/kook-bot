@@ -10,6 +10,8 @@
   "author": "FlappyIce",
   "license": "MIT",
   "dependencies": {
+    "@sentry/node": "^7.45.0",
+    "@sentry/tracing": "^7.45.0",
     "axios": "^1.3.4",
     "i18n-js": "^4.2.2",
     "kbotify": "^0.2.5",

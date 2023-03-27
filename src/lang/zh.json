@@ -75,7 +75,7 @@
       "title": "存在多个结果",
       "description": "请输入对应玩家下标，来查询；下方截取部分结果",
       "intro": "使用名称查询玩家状态",
-      "noContent": "抱歉，我没有找到任何结果",
+      "noContent": "抱歉，在BFBAN中没有找到结果",
       "typeError": "请输入数字，且存在上方数字内",
       "timeoutPrompt": "超时操作时间，事件已释放",
       "underLengthError": "输入的长度不足，至少3个字符"

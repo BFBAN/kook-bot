@@ -7,13 +7,17 @@ class BotMarket {
 
   constructor() {
     const that = this;
-    if (config.__DEBUG__) return;
+    if (config.__DEBUG__) {
+      return;
+    }
+
+    that.upDateOnline();
     this.immediate = setInterval(function() {
-      that.upDateOnline()
+      that.upDateOnline();
     }, that.intervalTime);
   }
 
-  stop () {
+  stop() {
     clearInterval(this.immediate);
   }
 
@@ -21,15 +25,16 @@ class BotMarket {
    * botMarket 心跳
    */
   upDateOnline() {
-    if (config.botMarket && config.botMarket.uuid) return;
-
+    if (!config?.botMarket && !config?.botMarket?.uuid) {
+      return;
+    }
     axios({
-      url: `http:/${config.botMarket.origin}/api/v1/online.bot`,
+      url: `http://${config.botMarket.origin}/api/v1/online.bot`,
       method: "get",
       headers: {
         "uuid": config.botMarket.uuid
       }
-    });
+    }).then(res => console.log(res)).catch(err => console.log(err));
   }
 }
 
