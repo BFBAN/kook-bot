@@ -20,7 +20,7 @@ const config = {
   // 机器人网站
   "botWebSite": "https://cabbagelol.github.io/kook-bot-docs",
   // 官网
-  "webSite": "https://bfban.gametools.network",
+  "webSite": "https://bfban.com",
 
   "i18n": {
     "default": "zh-CN"
