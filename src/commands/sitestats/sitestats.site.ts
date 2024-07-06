@@ -1,17 +1,18 @@
-import axios, { AxiosResponse } from "axios";
+import { AxiosResponse } from "axios";
 import api from "../../configs/api";
 import commandPack from "../commandPack";
 import Http from "../../lib/http";
 import SitestatsCalcCountTemplate from "../../template/SitestatsCalcCountTemplate";
 
-import { AppCommand, AppFunc, BaseSession, Card } from "kbotify";
+import { AppCommand, AppFunc, BaseSession } from "kbotify";
 import { bot } from "../../../bot";
 import { ErrorTemplate } from "../../template/errorTemplate";
+import { httpBfban } from "../../../lib";
 
 class SitestatsSite extends AppCommand {
   code = "site";
   trigger = "site";
-  help = ".sitestats site (reports:true) (players:true) (confirmed:true) (registers:true) (banAppeals:true)";
+  help = ".sitestats site (reports:true) (players:true) (confirmed:true) (registers:true) (banAppeals:true) (admins:true)";
   intro = "sitestats.site.intro";
   http = new Http();
 
@@ -22,13 +23,13 @@ class SitestatsSite extends AppCommand {
       let resStatistics = await this.getStatistics(other);
 
       if (!resStatistics) {
-        session.reply('抱歉，没有找到数据');
+        await session.reply("抱歉，没有找到数据");
         return;
       }
 
-      session.replyCard(new SitestatsCalcCountTemplate(resStatistics).generation(other.get("lang")));
+      await session.replyCard(new SitestatsCalcCountTemplate(resStatistics).generation(other.get("lang")));
     } catch (err) {
-      session.replyCard(new ErrorTemplate(err).generation({
+      await session.replyCard(new ErrorTemplate(err).generation({
         lang: other.get("lang"),
         session
       }));
@@ -41,29 +42,25 @@ class SitestatsSite extends AppCommand {
    * @param params.time
    * @protected
    */
-  protected async getStatistics(params: any): Promise<AxiosResponse> {
-    return new Promise(async (resolve, reject) => {
-      await axios({
-        url: this.http.address + "api/" + api.statistics,
-        method: "get",
+  protected async getStatistics(params: any) {
+    const result = await httpBfban.get(api.statistics, {
         params: {
           reports: params.get("reports") ?? true,
           players: params.get("players") ?? true,
           confirmed: params.get("confirmed") ?? true,
           registers: params.get("registers") ?? true,
           banAppeals: params.get("banAppeals") ?? true,
+          admins: params.get("admins") ?? true,
           from: 1514764800000
         }
-      }).then(res => {
-        if (res.data.success === 1) {
-          return resolve(res.data);
-        }
-        reject(res);
-      }).catch(err => {
-        return reject(err);
-      });
+      }),
+      d = result.data;
 
-    });
+    if (d.error === 1) {
+      throw d.message;
+    }
+
+    return result;
   }
 }
 

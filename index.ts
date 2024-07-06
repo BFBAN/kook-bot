@@ -1,11 +1,13 @@
+"use strict";
 import * as fs from "fs";
-import upath, { parse } from "upath";
+import upath from "upath";
+import express from "express/index";
 
 import config from "./config";
 
 import { bot } from "./bot";
 import { exampleMenu } from "./src/commands/example/example.menu";
-import { checkbanMenu } from "./src/commands/checkban/checkban.menu";
+import { checkPlayerMenu } from "./src/commands/checkPlayer/checkPlayer.menu";
 import { sitestatsMenu } from "./src/commands/sitestats/sitestats.menu";
 import { helpMenu } from "./src/commands/help/help.menu";
 import { invitationMenu } from "./src/commands/invitation/invitation.menu";
@@ -16,12 +18,21 @@ import botStatus from "./src/lib/botStatus";
 import botMarket from "./src/lib/botMarket";
 import { SentryManagement } from "./src/lib/sentry";
 
+import router_index from "./router/index";
+import { reportMenu } from "./src/commands/report/report.menu";
+import { bindingMenu } from "./src/commands/binding/binding.menu";
+import { httpBfban } from "./lib";
+
 try {
+  /// 机器人
   class Main {
     protected mode: any = [SentryManagement, botStatus, botEvent, botMarket];
-    protected commands: any = [helpMenu, checkbanMenu, sitestatsMenu, widgetMenu, invitationMenu];
+    protected commands: any = [helpMenu, checkPlayerMenu, sitestatsMenu, widgetMenu, reportMenu, bindingMenu, invitationMenu];
 
     constructor() {
+      // 初始身份令牌
+      httpBfban.createToken();
+
       this.ready();
     }
 
@@ -57,12 +68,37 @@ try {
       bot.connect();
 
       bot.logger.info("Initialization: " + config.name + " initialization start");
-      console.log("Initialization: " + config.name + " initialization start");
+    }
+  }
+
+  /// 网络服务
+  class ExMain {
+    app = express();
+
+    constructor() {
+      // Initialize APP
+      this.init();
+    }
+
+    init() {
+      this.app.use("/api", router_index);
+
+      this.app.use((req, res, next) => {
+        res.status(500);
+      });
+
+      this.app.use((err, res) => { // error handler
+        res.status(500).json({ error: 1, code: "server.error" });
+      });
+
+      this.app.listen(config.port, config.address, async () => {
+        console.log(`App start at ${config.address}:${config.port}`);
+      });
     }
   }
 
   new Main();
+  new ExMain();
 } catch (err) {
-  console.log(err);
   bot.logger.error(err);
 }

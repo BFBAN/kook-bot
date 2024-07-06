@@ -8,6 +8,7 @@ import { AppCommand, AppFunc, BaseSession } from "kbotify";
 import { bot } from "../../../bot";
 import { ErrorTemplate } from "../../template/errorTemplate";
 import i18n from "../../../langage";
+import { httpBfban } from "../../../lib";
 
 class SitestatsAdmin extends AppCommand {
   code = "admin";
@@ -20,17 +21,16 @@ class SitestatsAdmin extends AppCommand {
     const { mainValue, other } = new commandPack.CommandFactory().pack(session.args);
 
     try {
-
-      let resAdmin = await this.getAdmin(other);
+      let resAdmin = await this.getAdmins(other);
 
       if (!resAdmin) {
-        session.reply(i18n.t("sitestats.admins.notContent", other.get("lang")));
+        await session.reply(i18n.t("sitestats.admins.notContent", other.get("lang")));
         return;
       }
 
-      session.replyCard(new SitestatsAdminTemplate(resAdmin).generation(other.get("lang")));
+      await session.replyCard(new SitestatsAdminTemplate(resAdmin).generation(other.get("lang")));
     } catch (err) {
-      session.replyCard(new ErrorTemplate(err).generation({
+      await session.replyCard(new ErrorTemplate(err).generation({
         lang: other.get("lang"),
         session
       }));
@@ -43,20 +43,16 @@ class SitestatsAdmin extends AppCommand {
    * @param params
    * @protected
    */
-  protected async getAdmin(params: any): Promise<AxiosResponse> {
+  protected async getAdmins(params: any): Promise<AxiosResponse> {
     return new Promise(async (resolve, reject) => {
-      await axios({
-        url: this.http.address + "api/" + api.admins,
-        method: "get"
-      }).then(res => {
-        if (res.data.success === 1) {
-          return resolve(res.data);
-        }
-        reject(res);
-      }).catch(err => {
-        return reject(err);
-      });
+      const result = await httpBfban.get(api.admins),
+        d = result.data;
 
+      if (d.error === 1) {
+        throw d.message;
+      }
+
+      return result;
     });
   }
 }

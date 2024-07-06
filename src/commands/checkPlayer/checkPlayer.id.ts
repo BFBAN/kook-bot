@@ -8,12 +8,13 @@ import { bot } from "../../../bot";
 import { PlayerCardTemplate } from "../../template/playerCardTemplate";
 import { ErrorTemplate } from "../../template/errorTemplate";
 import i18n from "../../../langage";
+import { httpBfban } from "../../../lib";
 
-class CheckbanId extends AppCommand {
+class CheckPlayerId extends AppCommand {
   code = "id";
   trigger = "id";
-  help = ".checkban id [id:number]";
-  intro = "checkban.id.intro";
+  help = ".checkplayer id [id:number]";
+  intro = "checkplayer.id.intro";
   http = new Http();
 
   func: AppFunc<BaseSession> = async (session) => {
@@ -58,23 +59,21 @@ class CheckbanId extends AppCommand {
     }
 
     return new Promise(async (resolve, reject) => {
-      await axios({
-        url: this.http.address + "api/" + api.player,
-        method: "get",
-        params: {
-          "history": true,
-          "personaId": id
-        }
-      }).then(res => {
-        if (res.data.success === 1) {
-          return resolve(res.data);
-        }
-        reject(res);
-      }).catch(err => {
-        return reject(err);
-      });
+      const result = await httpBfban.get(api.players, {
+          params: {
+            "history": true,
+            "personaId": id
+          }
+        }),
+        d = result.data;
+
+      if (d.error === 1) {
+        throw d.message;
+      }
+
+      return d;
     });
   }
 }
 
-export const checkbanId = new CheckbanId();
+export const checkPlayerId = new CheckPlayerId();

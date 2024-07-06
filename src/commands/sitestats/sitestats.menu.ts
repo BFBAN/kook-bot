@@ -1,9 +1,9 @@
 import { Card, MenuCommand } from "kbotify";
 import { sitestatsHot } from "./sitestats.hot";
 import { sitestatsSite } from "./sitestats.site";
-import { sitestatsAdmin } from "./sitestats.admin";
+import { sitestatsLeaderboard } from "./sitestats.leaderboard";
+
 import config from "../../../config";
-import i18n from "../../../langage";
 
 class SitestatsMenu extends MenuCommand {
   code = "sitestats";
@@ -17,4 +17,4 @@ class SitestatsMenu extends MenuCommand {
   useCardMenu = true;
 }
 
-export const sitestatsMenu = new SitestatsMenu(sitestatsHot, sitestatsSite, sitestatsAdmin);
+export const sitestatsMenu = new SitestatsMenu(sitestatsHot, sitestatsSite, sitestatsLeaderboard);

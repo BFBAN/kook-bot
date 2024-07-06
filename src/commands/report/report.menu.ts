@@ -1,12 +1,11 @@
 import config from "../../../config";
 
 import { Card, MenuCommand } from "kbotify";
-import { checkbanId } from "./checkban.id";
-import { checkbanName } from "./checkban.name";
+import { reportName } from "./report.name";
 
-class CheckbanMenu extends MenuCommand {
-  code = "checkban";
-  trigger = "checkban";
+class ReportMenu extends MenuCommand {
+  code = "report";
+  trigger = "report";
   help = "";
 
   menu = new Card()
@@ -16,4 +15,4 @@ class CheckbanMenu extends MenuCommand {
   useCardMenu = true;
 }
 
-export const checkbanMenu = new CheckbanMenu(checkbanId, checkbanName);
+export const reportMenu = new ReportMenu(reportName);

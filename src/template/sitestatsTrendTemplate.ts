@@ -7,7 +7,6 @@ import config from "../../config";
 class SitestatsTrendTemplate {
   trendData: any;
   http = new Http();
-
   help: string | undefined;
 
   constructor(data: any) {

@@ -10,12 +10,13 @@ import { SearchListTemplate } from "../../template/searchListTemplate";
 import { PlayerCardTemplate } from "../../template/playerCardTemplate";
 import { ErrorTemplate } from "../../template/errorTemplate";
 import i18n from "../../../langage";
+import { httpBfban } from "../../../lib";
 
-class CheckbanName extends AppCommand {
+class CheckPlayerName extends AppCommand {
   code = "name";
   trigger = "name";
-  help = ".checkban name [name:string] (game:all) (sort:default) (limit:5)";
-  intro = "checkban.name.intro";
+  help = ".checkplayer name [name:string] (game:all) (sort:default) (limit:5)";
+  intro = "checkplayer.name.intro";
 
   http: Http = new Http();
   expirationTime = 1000 * 30;
@@ -72,8 +73,9 @@ class CheckbanName extends AppCommand {
           let selectNumber = Number(msg.content);
           // 选择器仅在0到搜索结果长度之内
           if (selectNumber >= 0 && selectNumber <= (other.get("limit") ?? 5)) {
-            if (!resSearch.data[selectNumber].get('originPersonaId'))
+            if (!resSearch.data[selectNumber].get("originPersonaId")) {
               await session.reply(i18n.t("checkban.name.typeError", other.get("lang")));
+            }
 
             await that.sendPlayerCard(
               resSearch,
@@ -165,7 +167,7 @@ class CheckbanName extends AppCommand {
 
     return new Promise(async (resolve, reject) => {
       await axios({
-        url: this.http.address + "api/" + api.player,
+        url: this.http.address + "api/" + api.players,
         method: "get",
         params: {
           "history": true,
@@ -190,11 +192,8 @@ class CheckbanName extends AppCommand {
    * @param value
    * @param params
    */
-  protected async onSearch(value: string, params: any): Promise<any> {
-    return new Promise(async (resolve, reject) => {
-      await axios({
-        url: this.http.address + "api/" + api.search,
-        method: "get",
+  protected async onSearch(value: string, params: any) {
+    const result = await httpBfban.get(api.search, {
         params: {
           game: params.get("game") ?? "all",
           gameSort: params.get("sort") ?? "default",
@@ -203,16 +202,15 @@ class CheckbanName extends AppCommand {
           type: "player",
           param: value ?? ""
         }
-      }).then(res => {
-        if (res.data.success === 1) {
-          return resolve(res.data);
-        }
-        reject(res);
-      }).catch(err => {
-        return reject(err);
-      });
-    });
+      }),
+      d = result.data;
+
+    if (d.error) {
+      throw d.message;
+    }
+
+    return d;
   }
 }
 
-export const checkbanName = new CheckbanName();
+export const checkPlayerName = new CheckPlayerName();
