@@ -17,8 +17,10 @@
           "es2020",
           "dom"
         ],
-        "baseUrl": "./src",
-        "rootDirs": ["src"],
+        "baseUrl": "./bot-server",
+        "rootDirs": [
+            "bot-server"
+        ],
         "outDir": "./dist",
         "strict": true,
         "typeRoots": ["./typings", "node_modules/@types"],
@@ -31,8 +33,10 @@
         // "./src/commands/shared/*.ts",
         // "./src/utils/*.ts",
         // "./src/index.ts",
-        "./src/**/*.ts",
-        ".eslintrc.js", "index.ts", "index.ts", "client.ts",
+        "./bot-server/**/*.ts",
+        ".eslintrc.js", "index.ts", "index.ts", "client.ts"
     ],
-    "exclude": ["./src/tests/*.ts"]
+    "exclude": [
+        "./bot-server/tests/*.ts"
+    ]
 }

@@ -9,9 +9,8 @@ class I18n {
 
   public t(n: any, l: string = config.i18n.default) {
     try {
-      if (config.languages.indexOf(l) < 0) {
-        throw "No corresponding translation found, only support:" + config.languages.toString()
-        return
+      if (config.i18n.languages.indexOf(l) < 0) {
+        throw "No corresponding translation found, only support:" + config.i18n.languages.toString()
       }
 
       const langObject = this.lang[l] ?? {};
@@ -29,9 +28,9 @@ class I18n {
   }
 }
 
-// langages list
-const zh = require("./src/lang/zh.json");
-const en = require("./src/lang/en.json");
+// languages list
+const zh = require("./bot-server/lang/zh.json");
+const en = require("./bot-server/lang/en.json");
 
 const i18n = new I18n({ "en-US": en, "zh-CN": zh });
 

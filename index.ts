@@ -2,29 +2,30 @@
 import * as fs from "fs";
 import upath from "upath";
 import express from "express/index";
+import bodyParser from "body-parser";
 
 import config from "./config";
 
 import { bot } from "./bot";
-import { exampleMenu } from "./src/commands/example/example.menu";
-import { checkPlayerMenu } from "./src/commands/checkPlayer/checkPlayer.menu";
-import { sitestatsMenu } from "./src/commands/sitestats/sitestats.menu";
-import { helpMenu } from "./src/commands/help/help.menu";
-import { invitationMenu } from "./src/commands/invitation/invitation.menu";
-import { widgetMenu } from "./src/commands/widget/widget.menu";
+import { exampleMenu } from "./bot-server/commands/example/example.menu";
+import { checkPlayerMenu } from "./bot-server/commands/checkPlayer/checkPlayer.menu";
+import { sitestatsMenu } from "./bot-server/commands/sitestats/sitestats.menu";
+import { helpMenu } from "./bot-server/commands/help/help.menu";
+import { invitationMenu } from "./bot-server/commands/invitation/invitation.menu";
+import { widgetMenu } from "./bot-server/commands/widget/widget.menu";
 
-import botEvent from "./src/lib/botEvent";
-import botStatus from "./src/lib/botStatus";
-import botMarket from "./src/lib/botMarket";
-import { SentryManagement } from "./src/lib/sentry";
+import botEvent from "./lib/botEvent";
+import botStatus from "./lib/botStatus";
+import botMarket from "./lib/botMarket";
+import { SentryManagement } from "./lib/sentry";
 
-import router_index from "./router/index";
-import { reportMenu } from "./src/commands/report/report.menu";
-import { bindingMenu } from "./src/commands/binding/binding.menu";
+import router_index from "./network-server/index";
+import { reportMenu } from "./bot-server/commands/report/report.menu";
+import { bindingMenu } from "./bot-server/commands/binding/binding.menu";
 import { httpBfban } from "./lib";
 
 try {
-  /// 机器人
+  /// 机器人服务
   class Main {
     protected mode: any = [SentryManagement, botStatus, botEvent, botMarket];
     protected commands: any = [helpMenu, checkPlayerMenu, sitestatsMenu, widgetMenu, reportMenu, bindingMenu, invitationMenu];
@@ -81,6 +82,8 @@ try {
     }
 
     init() {
+      this.app.use(bodyParser.json());
+
       this.app.use("/api", router_index);
 
       this.app.use((req, res, next) => {

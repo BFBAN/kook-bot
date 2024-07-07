@@ -1,7 +1,6 @@
 import http from "axios";
 
 import { Http } from "./http";
-import { HttpContainer } from "../data/baseHttp";
 import config from "../config";
 import api from "./api";
 

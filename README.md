@@ -18,7 +18,7 @@ npm start
 
 ```
 
-所有指令在[/command](/src/commands)内, 新增指令参考[例子](/src/commands/example), 开发文档参考`kBotify`SDK
+所有指令在[/command](/bot-server/commands)内, 新增指令参考[例子](/bot-server/commands/example), 开发文档参考`kBotify`SDK
 
 ---
 
