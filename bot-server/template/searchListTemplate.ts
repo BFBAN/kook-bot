@@ -1,7 +1,7 @@
 import { Card } from "kbotify";
 import i18n from "../../langage";
-import { BaseFooterTemplate } from "./baseFooterTemplate";
 import config from "../../config";
+import { CardExtend } from "../../data/CardExp";
 
 class SearchListTemplate {
   searchList: any;
@@ -18,7 +18,7 @@ class SearchListTemplate {
    */
   generation(other: any = null, mainValue: string = "", expirationTime: number = 0): Card {
     let lang = other.get("lang") ?? config.i18n.default;
-    let message = new Card();
+    let message = new CardExtend();
     let search_list = this.searchList;
 
     if (!search_list) {
@@ -69,13 +69,13 @@ class SearchListTemplate {
       .addCountdown("second", endTime, new Date().getTime());
 
     // set card footer
-    message = new BaseFooterTemplate().add(message);
+    message.addFooter();
 
     return message;
   }
 
   lockWidget({ lang = config.i18n.default }) {
-    let message = new Card();
+    let message = new CardExtend();
     let search_list = this.searchList;
 
     if (!search_list) {
@@ -89,7 +89,7 @@ class SearchListTemplate {
       .addText(i18n.t("checkban.name.timeoutPrompt", lang));
 
     // set card footer
-    message = new BaseFooterTemplate().add(message);
+    message.addFooter();
 
     return message;
   }

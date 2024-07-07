@@ -144,9 +144,10 @@ class CheckPlayerName extends AppCommand {
       clearTimeout(this.timer); // 关闭超时计时器
 
       // 发送玩家卡片
-      await session.updateMessage(replyId, new PlayerCardTemplate(player_info).generation({
-        lang: other.get("lang")
-      }).toString());
+      await session.updateMessage(replyId, new PlayerCardTemplate().addAttr({
+        lang: other.get("lang"),
+        data: player_info
+      }).generation.toString());
     } else {
       await session.reply(i18n.t("checkban.name.noContent", other.get("lang")));
     }

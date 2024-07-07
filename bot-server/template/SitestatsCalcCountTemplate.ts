@@ -1,25 +1,19 @@
 import { Card } from "kbotify";
 import i18n from "../../langage";
-import { BaseFooterTemplate } from "./baseFooterTemplate";
-import config from "../../config";
+import BaseTemplate from "./BaseTemplate";
+import { CardExtend } from "../../data/CardExp";
 
-class SitestatsCalcCountTemplate {
-  webData: any;
-
-  constructor(data: any) {
-    this.webData = data;
-  }
-
-  generation({ lang = config.i18n.default } = {}): Card {
-    let message = new Card();
-    let web_data = this.webData;
+class SitestatsCalcCountTemplate extends BaseTemplate {
+  public get generation(): Card {
+    let message = new CardExtend();
+    let web_data = this.data;
 
     if (!web_data) {
       return message;
     }
 
     message
-      .addTitle(i18n.t("sitestats.trend.title", lang))
+      .addTitle(i18n.t("sitestats.trend.title", this.lang))
       .addDivider()
       .addModule({
         type: "section",
@@ -29,30 +23,30 @@ class SitestatsCalcCountTemplate {
           "fields": [
             {
               "type": "kmarkdown",
-              "content": `**${i18n.t("sitestats.reports", lang)}**\n${web_data?.data.reports || 0}`
+              "content": `**${i18n.t("sitestats.reports", this.lang)}**\n${web_data?.data.reports || 0}`
             },
             {
               "type": "kmarkdown",
-              "content": `**${i18n.t("sitestats.players", lang)}**\n${web_data?.data.players || 0}`
+              "content": `**${i18n.t("sitestats.players", this.lang)}**\n${web_data?.data.players || 0}`
             },
             {
               "type": "kmarkdown",
-              "content": `**${i18n.t("sitestats.banAppealse", lang)}**\n${web_data?.data.banAppeals || 0}`
+              "content": `**${i18n.t("sitestats.banAppealse", this.lang)}**\n${web_data?.data.banAppeals || 0}`
             },
             {
               "type": "kmarkdown",
-              "content": `**${i18n.t("sitestats.registers", lang)}**\n${web_data?.data.registers || 0}`
+              "content": `**${i18n.t("sitestats.registers", this.lang)}**\n${web_data?.data.registers || 0}`
             },
             {
               "type": "kmarkdown",
-              "content": `**${i18n.t("sitestats.confirmed", lang)}**\n${web_data?.data.confirmed || 0}`
+              "content": `**${i18n.t("sitestats.confirmed", this.lang)}**\n${web_data?.data.confirmed || 0}`
             }
           ]
         }
       });
 
     // set card footer
-    message = new BaseFooterTemplate().add(message);
+    message.addFooter()
 
     return message;
   }

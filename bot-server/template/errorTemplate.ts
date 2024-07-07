@@ -1,9 +1,8 @@
 import config from "../../config";
 import i18n from "../../langage";
 
-import { Card } from "kbotify";
-import { BaseFooterTemplate } from "./baseFooterTemplate";
 import { AxiosError } from "axios";
+import { CardExtend } from "../../data/CardExp";
 
 class ErrorTemplate {
   errorContent: any = ":( I have an error";
@@ -15,7 +14,7 @@ class ErrorTemplate {
   }
 
   public generation({ lang = config.i18n.default, session: BaseSession = {} } = {}) {
-    let message = new Card({
+    let message = new CardExtend({
       color: "",
       modules: [],
       size: "lg",
@@ -51,7 +50,7 @@ class ErrorTemplate {
       .addText(content);
 
     // set card footer
-    message = new BaseFooterTemplate().add(message);
+    message.addFooter();
 
     return message;
   }

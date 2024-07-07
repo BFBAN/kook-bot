@@ -34,7 +34,10 @@ class CheckPlayerId extends AppCommand {
       }
 
       // send playerCard message
-      await session.replyCard(new PlayerCardTemplate(player_info).generation(other.get("lang")));
+      await session.replyCard(new PlayerCardTemplate().addAttr({
+        lang: other.get("lang"),
+        data: player_info
+      }).generation);
     } catch (err) {
       await session.replyCard(new ErrorTemplate(err).generation({
         lang: other.get("lang"),

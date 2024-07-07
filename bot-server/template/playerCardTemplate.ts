@@ -2,20 +2,15 @@ import config from "../../config";
 
 import i18n from "../../langage";
 import { Card } from "kbotify";
-import { BaseFooterTemplate } from "./baseFooterTemplate";
+import BaseTemplate from "./BaseTemplate";
+import { CardExtend } from "../../data/CardExp";
 
-class PlayerCardTemplate {
-  playerInfo: any;
-
-  constructor(data: any) {
-    this.playerInfo = data;
-  }
-
-  generation({ lang = config.i18n.default } = {}): Card {
-    let message: Card = new Card();
+class PlayerCardTemplate extends BaseTemplate {
+  public get generation(): Card {
+    let message: CardExtend = new CardExtend();
     const status_config: { [any: string]: string } = { "0": "success", "1": "pink", "4": "success", "default": "none" };
 
-    let player_info: any = this.playerInfo;
+    let player_info: any = this.data;
     let player_historyName: Array<any> = [];
     let player_url: string = "";
     let player_i18n_methods: Array<any> = [];
@@ -39,28 +34,28 @@ class PlayerCardTemplate {
 
     // 作弊类型
     player_info?.data.cheatMethods.forEach((methodsName: string) => {
-      player_i18n_methods.push(i18n.t(`base.action.${methodsName}.text`, lang));
+      player_i18n_methods.push(i18n.t(`base.action.${methodsName}.text`, this.lang));
     });
 
     // 游戏类型
     player_info?.data.games.forEach((gameKey: string | number) => {
-      player_i18n_games.push("`" + i18n.t(`base.games.${gameKey}`, lang) + "`");
+      player_i18n_games.push("`" + i18n.t(`base.games.${gameKey}`, this.lang) + "`");
     });
 
     player_i18n_createTime = new Intl.DateTimeFormat(
-      lang,
+      this.lang,
       { year: "numeric", month: "long", day: "numeric", hour: "numeric", minute: "numeric", second: "numeric" }
     ).format(new Date(player_info?.data.createTime).getTime());
 
     player_i18n_updateTime = new Intl.DateTimeFormat(
-      lang,
+      this.lang,
       { year: "numeric", month: "long", day: "numeric", hour: "numeric", minute: "numeric", second: "numeric" }
     ).format(new Date(player_info?.data.updateTime).getTime());
 
     player_i18n_status = status_config[player_info?.data.status.toString() || "default"];
 
     message
-      .addTitle(i18n.t("checkban.id.title", lang))
+      .addTitle(i18n.t("checkban.id.title", this.lang))
       .addDivider()
       .addModule({
         "type": "context",
@@ -78,7 +73,7 @@ class PlayerCardTemplate {
           },
           {
             "type": "kmarkdown",
-            "content": ` (${player_info.data.id}) · [${i18n.t("checkban.share", lang)}](${player_url + "/share"}) · [${i18n.t("checkban.detail", lang)}](${player_url})`
+            "content": ` (${player_info.data.id}) · [${i18n.t("checkban.share", this.lang)}](${player_url + "/share"}) · [${i18n.t("checkban.detail", this.lang)}](${player_url})`
           }
         ]
       })
@@ -91,27 +86,27 @@ class PlayerCardTemplate {
           "fields": [
             {
               "type": "kmarkdown",
-              "content": `**${i18n.t("checkban.status", lang)}**\n(font)${i18n.t(`base.status.${player_info?.data.status}`, lang)}(font)[${player_i18n_status || "default"}]`
+              "content": `**${i18n.t("checkban.status", this.lang)}**\n(font)${i18n.t(`base.status.${player_info?.data.status}`, this.lang)}(font)[${player_i18n_status || "default"}]`
             },
             {
               "type": "kmarkdown",
-              "content": `**${i18n.t("checkban.games", lang)}**\n${player_i18n_games.join(",")}`
+              "content": `**${i18n.t("checkban.games", this.lang)}**\n${player_i18n_games.join(",")}`
             },
             {
               "type": "kmarkdown",
-              "content": `**${i18n.t("checkban.methods", lang)}**\n${player_i18n_methods.length >= 0 ? player_i18n_methods.join(" ") : "-"}`
+              "content": `**${i18n.t("checkban.methods", this.lang)}**\n${player_i18n_methods.length >= 0 ? player_i18n_methods.join(" ") : "-"}`
             },
             {
               "type": "kmarkdown",
-              "content": `**${i18n.t("checkban.viewNum", lang)}**\n${player_info?.data.viewNum ?? 0}`
+              "content": `**${i18n.t("checkban.viewNum", this.lang)}**\n${player_info?.data.viewNum ?? 0}`
             },
             {
               "type": "kmarkdown",
-              "content": `**${i18n.t("checkban.commentsNum", lang)}**\n${player_info?.data.commentsNum ?? 0}`
+              "content": `**${i18n.t("checkban.commentsNum", this.lang)}**\n${player_info?.data.commentsNum ?? 0}`
             },
             {
               "type": "kmarkdown",
-              "content": `**${i18n.t("checkban.gameId", lang)}**\n${player_info?.data.originPersonaId ?? '-'}`
+              "content": `**${i18n.t("checkban.gameId", this.lang)}**\n${player_info?.data.originPersonaId ?? '-'}`
             }
 
           ]
@@ -125,20 +120,20 @@ class PlayerCardTemplate {
           "fields": [
             {
               "type": "kmarkdown",
-              "content": `**${i18n.t("checkban.createTime", lang)}**\n${player_i18n_createTime}`
+              "content": `**${i18n.t("checkban.createTime", this.lang)}**\n${player_i18n_createTime}`
             },
             {
               "type": "kmarkdown",
-              "content": `**${i18n.t("checkban.updateTime", lang)}**\n${player_i18n_updateTime}`
+              "content": `**${i18n.t("checkban.updateTime", this.lang)}**\n${player_i18n_updateTime}`
             }
           ]
         }
       })
       .addDivider()
-      .addText(`${i18n.t("checkban.historyName", lang)}: ${player_historyName.toString()}`);
+      .addText(`${i18n.t("checkban.historyName", this.lang)}: ${player_historyName.toString()}`);
 
     // set card footer
-    message = new BaseFooterTemplate().add(message);
+    message.addFooter()
 
     return message;
   }

@@ -23,7 +23,7 @@ class SitestatsSite extends AppCommand {
         return;
       }
 
-      await session.replyCard(new SitestatsCalcCountTemplate(resStatistics).generation(other.get("lang")));
+      await session.replyCard(new SitestatsCalcCountTemplate().addAttr({ lang: other.get("lang"), data: resStatistics }).generation);
     } catch (err) {
       await session.replyCard(new ErrorTemplate(err).generation({
         lang: other.get("lang"),

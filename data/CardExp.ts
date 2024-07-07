@@ -1,9 +1,16 @@
 import { Card } from "kbotify";
-import config from "../../config";
+import config from "../config";
 
-class BaseFooterTemplate {
-  add(card: Card) {
-    card
+export class CardExtend extends Card {
+  public addHeader(): Card {
+    this
+      .addTitle("BFBAN")
+      .addDivider()
+    return this;
+  }
+
+  public addFooter(): Card {
+    this
       .addDivider()
       .addModule({
         type: "context",
@@ -22,9 +29,6 @@ class BaseFooterTemplate {
           }
         ]
       });
-
-    return card;
+    return this;
   }
 }
-
-export { BaseFooterTemplate };

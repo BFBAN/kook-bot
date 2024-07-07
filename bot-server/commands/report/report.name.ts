@@ -2,9 +2,6 @@ import commandPack from "../commandPack";
 
 import { AppCommand, AppFunc, BaseSession, Card } from "kbotify";
 import { bot } from "../../../bot";
-import { PlayerCardTemplate } from "../../template/playerCardTemplate";
-import { ErrorTemplate } from "../../template/errorTemplate";
-import i18n from "../../../langage";
 
 export class ReportName extends AppCommand {
   code = "name";

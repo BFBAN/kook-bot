@@ -1,12 +1,9 @@
-class NotFoundTemplate {
-  constructor() {
-  }
+import { Card } from "kbotify";
+import BaseTemplate from "./BaseTemplate";
 
-  generation () {
-    return;
+export default class NotFoundTemplate extends BaseTemplate {
+  public get generation(): Card {
+    let card = new Card();
+    return card;
   }
-}
-
-export {
-  NotFoundTemplate
 }

@@ -1,37 +1,31 @@
 import { Card } from "kbotify";
 import i18n from "../../langage";
-import { BaseFooterTemplate } from "./baseFooterTemplate";
 import config from "../../config";
+import BaseTemplate from "./BaseTemplate";
+import { CardExtend } from "../../data/CardExp";
 
-class SitestatsCalcCountTemplate {
-  leaderboardData: any;
-  help: string | undefined;
-
-  constructor(data: any) {
-    this.leaderboardData = data;
-  }
-
-  generation(help: string, { lang = config.i18n.default } = {}): Card {
-    let message = new Card();
-    let leaderboard_data = this.leaderboardData;
+class SitestatsCalcCountTemplate extends BaseTemplate {
+  public get generation(): Card {
+    let message = new CardExtend();
+    let leaderboard_data = this.data;
 
     if (!leaderboard_data) {
       return message;
     }
 
     message
-      .addTitle(i18n.t("sitestats.leaderboard.title", lang))
+      .addTitle(i18n.t("sitestats.leaderboard.title", this.lang))
       .addDivider()
-      .addText(help ?? "-")
+      .addText(this.help ?? "-")
       .addDivider();
 
     //// 社区 S
     // 标题
-    message.addTitle(i18n.t("sitestats.leaderboard.community.title", lang))
+    message.addTitle(i18n.t("sitestats.leaderboard.community.title", this.lang));
     let communityFields = [
-        { "type": "kmarkdown", "content": `**${i18n.t("sitestats.trend.index", lang)}**` },
-        { "type": "kmarkdown", "content": `**${i18n.t("sitestats.trend.username", lang)}**` },
-        { "type": "kmarkdown", "content": `**${i18n.t("sitestats.trend.hot", lang)}**` }
+        { "type": "kmarkdown", "content": `**${i18n.t("sitestats.trend.index", this.lang)}**` },
+        { "type": "kmarkdown", "content": `**${i18n.t("sitestats.trend.username", this.lang)}**` },
+        { "type": "kmarkdown", "content": `**${i18n.t("sitestats.trend.hot", this.lang)}**` }
       ],
       communityIndex = 1;
 
@@ -51,11 +45,11 @@ class SitestatsCalcCountTemplate {
 
     //// 举报 S
     // 标题
-    message.addTitle(i18n.t("sitestats.leaderboard.report.title", lang))
+    message.addTitle(i18n.t("sitestats.leaderboard.report.title", this.lang));
     let reportsField = [
-        { "type": "kmarkdown", "content": `**${i18n.t("sitestats.trend.index", lang)}**` },
-        { "type": "kmarkdown", "content": `**${i18n.t("sitestats.trend.username", lang)}**` },
-        { "type": "kmarkdown", "content": `**${i18n.t("sitestats.trend.hot", lang)}**` }
+        { "type": "kmarkdown", "content": `**${i18n.t("sitestats.trend.index", this.lang)}**` },
+        { "type": "kmarkdown", "content": `**${i18n.t("sitestats.trend.username", this.lang)}**` },
+        { "type": "kmarkdown", "content": `**${i18n.t("sitestats.trend.hot", this.lang)}**` }
       ],
       reportsIndex = 1;
 
@@ -75,11 +69,11 @@ class SitestatsCalcCountTemplate {
 
     //// 成就 S
     // 标题
-    message.addTitle(i18n.t("sitestats.leaderboard.achievement.title", lang))
+    message.addTitle(i18n.t("sitestats.leaderboard.achievement.title", this.lang));
     let achievementFields = [
-        { "type": "kmarkdown", "content": `**${i18n.t("sitestats.trend.index", lang)}**` },
-        { "type": "kmarkdown", "content": `**${i18n.t("sitestats.trend.username", lang)}**` },
-        { "type": "kmarkdown", "content": `**${i18n.t("sitestats.trend.hot", lang)}**` }
+        { "type": "kmarkdown", "content": `**${i18n.t("sitestats.trend.index", this.lang)}**` },
+        { "type": "kmarkdown", "content": `**${i18n.t("sitestats.trend.username", this.lang)}**` },
+        { "type": "kmarkdown", "content": `**${i18n.t("sitestats.trend.hot", this.lang)}**` }
       ],
       achievementIndex = 1;
 
@@ -98,7 +92,7 @@ class SitestatsCalcCountTemplate {
     });
 
     // set card footer
-    message = new BaseFooterTemplate().add(message);
+    message.addFooter()
 
     return message;
   }

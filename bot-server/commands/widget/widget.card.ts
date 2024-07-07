@@ -1,6 +1,6 @@
 import puppeteer from "puppeteer";
 
-import { AppCommand, AppFunc, BaseSession } from "kbotify";
+import { AppCommand, AppFunc } from "kbotify";
 import { ErrorTemplate } from "../../template/errorTemplate";
 import { bot } from "../../../bot";
 import commandPack from "../commandPack";
@@ -14,7 +14,7 @@ class WidgetCard extends AppCommand {
   help = ".widget card [id:number] (height:number ps:Pixel) (width:number ps:Pixel) (theme:string) (lang:string)";
   intro = "widget.intro";
 
-  func: AppFunc<BaseSession> = async (session) => {
+  func: AppFunc = async (session) => {
     const { mainValue, other } = new commandPack.CommandFactory().pack(session.args);
 
     try {
@@ -23,16 +23,18 @@ class WidgetCard extends AppCommand {
       }
 
       if (!mainValue || !new RegExp(/^[0-9]+.?[0-9]*/).test(mainValue)) {
-        session.reply(i18n.t("widget.missingValue", other.get("lang")));
+        await session.reply(i18n.t("widget.missingValue", other.get("lang")));
       }
 
       const tipSendId = await session.send(i18n.t("widget.waitTip", other.get("lang")));
       const url: any = await this.generateWidget(mainValue, other);
 
       if (url) {
-        session.replyCard(new WidgetCardTemplate().generation(url, other.get("lang")));
+        await session.replyCard(new WidgetCardTemplate().addUrl(url).addAttr({
+          lang: other.get("lang")
+        }).generation);
       } else {
-        session.replyCard(new ErrorTemplate(i18n.t("widget.generationError", other.get("lang"))).generation({
+        await session.replyCard(new ErrorTemplate(i18n.t("widget.generationError", other.get("lang"))).generation({
           lang: other.get("lang"),
           session
         }));
@@ -40,10 +42,10 @@ class WidgetCard extends AppCommand {
 
       // 移除提示
       if (tipSendId) {
-        bot.API.message.delete(<string>tipSendId.msgSent?.msgId);
+        await bot.API.message.delete(<string>tipSendId.msgSent?.msgId);
       }
     } catch (err) {
-      session.replyCard(new ErrorTemplate(err).generation({
+      await session.replyCard(new ErrorTemplate(err).generation({
         lang: other.get("lang"),
         session
       }));
@@ -64,7 +66,7 @@ class WidgetCard extends AppCommand {
       throw "请填写id";
     }
 
-    return new Promise(async (resolve, reject) => {
+    return new Promise(async (resolve) => {
       const browser = await puppeteer.launch({ args: ["--no-sandbox"] });
       const page = await browser.newPage();
       const pageUrl = `${config.webSite}/player/${id}/share/card?full=true&theme=${theme ?? "default"}&lang=${lang ?? config.i18n.default}`;

@@ -24,7 +24,10 @@ class SitestatsHot extends AppCommand {
         return;
       }
 
-      await session.replyCard(new SitestatsTrendTemplate(resTrend).generation(this.help));
+      await session.replyCard(new SitestatsTrendTemplate().addAttr({
+        help: this.help,
+        data: resTrend
+      }).generation);
     } catch (err) {
       await session.replyCard(new ErrorTemplate(err).generation({
         lang: other.get("lang"),
@@ -49,8 +52,9 @@ class SitestatsHot extends AppCommand {
       }),
       d = result.data;
 
-    if (d.error == 1)
-      throw d.message
+    if (d.error == 1) {
+      throw d.message;
+    }
 
     return d;
   }

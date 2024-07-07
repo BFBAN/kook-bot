@@ -25,7 +25,10 @@ class SitestatsAdmin extends AppCommand {
         return;
       }
 
-      await session.replyCard(new SitestatsAdminTemplate(resAdmin).generation(other.get("lang")));
+      await session.replyCard(new SitestatsAdminTemplate().addAttr({
+        lang: other.get("lang"),
+        data: resAdmin
+      }).generation.toString());
     } catch (err) {
       await session.replyCard(new ErrorTemplate(err).generation({
         lang: other.get("lang"),

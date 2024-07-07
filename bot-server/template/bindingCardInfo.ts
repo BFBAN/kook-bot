@@ -1,12 +1,12 @@
 import { Card } from "kbotify";
-import { BaseFooterTemplate } from "./baseFooterTemplate";
 import BaseTemplate from "./BaseTemplate";
 
 import i18n from "../../langage";
+import { CardExtend } from "../../data/CardExp";
 
 export default class BindingCardTemplate extends BaseTemplate {
-  get generation(): Card {
-    let message = new Card();
+  public get generation(): Card {
+    let message = new CardExtend();
     let data = this.data;
 
     if (!data) {
@@ -21,7 +21,7 @@ export default class BindingCardTemplate extends BaseTemplate {
     message.addText(`username: ${data.username}`);
 
     // set card footer
-    message = new BaseFooterTemplate().add(message);
+    message.addFooter();
 
     return message;
   }

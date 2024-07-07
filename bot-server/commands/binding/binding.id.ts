@@ -8,7 +8,7 @@ import { api } from "../../../lib";
 import Api from "../../../lib/api";
 import { ErrorTemplate } from "../../template/errorTemplate";
 import { httpBfban } from "../../../lib";
-import { BaseFooterTemplate } from "../../template/baseFooterTemplate";
+import { CardExtend } from "../../../data/CardExp";
 
 export class BindingId extends AppCommand {
   code = "id";
@@ -24,7 +24,7 @@ export class BindingId extends AppCommand {
         return session.reply(this.help);
       }
 
-      let context = new Card()
+      let context = new CardExtend()
         .addText("通知")
         .addDivider()
         .addModule({
@@ -55,9 +55,10 @@ export class BindingId extends AppCommand {
               }
             }
           ]
-        });
+        })
+        .addFooter();
 
-      let sendId = await session.sendCard(new BaseFooterTemplate().add(context).toString());
+      let sendId = await session.sendCard(context.toString());
 
       bot.message.on("buttonEvent", async (event) => {
         if (
@@ -144,9 +145,14 @@ export class BindingId extends AppCommand {
   async createUser(mainValue: any, session: BaseSession) {
     let creationTime = new Date().getTime();
     const { id, username, avatar } = session.user;
+
+    if (!id || !username) {
+      return false;
+    }
+
     const newUser = await db("users").insert({
       creationTime,
-      username: session.user.username,
+      username,
       valid: 1
     });
 
@@ -176,9 +182,7 @@ export class BindingId extends AppCommand {
     }
 
     if (checkStatus) {
-      db("binding_auth_history").where({ userId: mainValue }).update({
-        creationTime: nowTime
-      });
+      db("binding_auth_history").where({ userId: mainValue }).update({ creationTime: nowTime });
       return true;
     }
 

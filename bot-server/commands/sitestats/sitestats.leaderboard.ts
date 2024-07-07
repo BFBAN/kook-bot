@@ -23,7 +23,9 @@ class SitestatsLeaderboard extends AppCommand {
         return;
       }
 
-      await session.replyCard(new LeaderboardTemplate(resStatistics).generation(this.help, other.get("lang")));
+      await session.replyCard(new LeaderboardTemplate().addAttr({
+        data: resStatistics
+      }).generation);
     } catch (err) {
       await session.replyCard(new ErrorTemplate(err).generation({
         lang: other.get("lang"),

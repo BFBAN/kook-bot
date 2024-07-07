@@ -1,11 +1,11 @@
 import { AppCommand, AppFunc, BaseSession, Card } from "kbotify";
-import { BaseFooterTemplate } from "../../template/baseFooterTemplate";
 
 import { bot } from "../../../bot";
 import { CommandTypes } from "kbotify/dist/core/types";
 import config from "../../../config";
 import i18n from "../../../langage";
 import commandPack from "../commandPack";
+import { CardExtend } from "../../../data/CardExp";
 
 class HelpMenu extends AppCommand {
   code = "help";
@@ -13,7 +13,7 @@ class HelpMenu extends AppCommand {
   help = "help.help";
 
   func: AppFunc<BaseSession> = async (session) => {
-    let message = new Card();
+    let message = new CardExtend();
     let content: string = "";
 
     const { mainValue, other } = new commandPack.CommandFactory().pack(session.args);
@@ -48,7 +48,7 @@ class HelpMenu extends AppCommand {
       .addText(i18n.t("base.button.document", other.get("lang")) + ":" + config.botWebSite);
 
     // set card footer
-    message = new BaseFooterTemplate().add(message);
+    message.addFooter();
 
     return session.replyCard(message);
   };

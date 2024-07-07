@@ -1,6 +1,6 @@
-import { Card, MenuCommand } from "kbotify";
+import { MenuCommand } from "kbotify";
 import config from "../../../config";
-import { BaseFooterTemplate } from "../../template/baseFooterTemplate";
+import { CardExtend } from "../../../data/CardExp";
 
 class InvitationMenu extends MenuCommand {
   code = "invitation";
@@ -10,11 +10,11 @@ class InvitationMenu extends MenuCommand {
   useCardMenu = true;
 
   protected getContent(): string {
-    let message = new Card();
+    let message = new CardExtend();
     message.addText("🔗👉🏻🤖: " + config.kookBotInviteUrl);
 
     // set card footer
-    message = new BaseFooterTemplate().add(message);
+    message.addFooter();
     return message.toString();
   }
 }

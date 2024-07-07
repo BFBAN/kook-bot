@@ -1,22 +1,16 @@
 import { Card } from "kbotify";
 import i18n from "../../langage";
-import { BaseFooterTemplate } from "./baseFooterTemplate";
 import config from "../../config";
+import BaseTemplate from "./BaseTemplate";
+import { CardExtend } from "../../data/CardExp";
 
-class SitestatsAdminTemplate {
-  webData: any;
-
+class SitestatsAdminTemplate extends BaseTemplate {
   showListNumber: number = 20;
 
-  constructor(data: any) {
-    this.webData = data;
-  }
-
   generation({ lang = config.i18n.default } = {}): Card {
-    let message = new Card();
-    let web_data = this.webData;
+    let message = new CardExtend();
 
-    if (!web_data) {
+    if (!this.data) {
       return message;
     }
 
@@ -36,7 +30,7 @@ class SitestatsAdminTemplate {
       }
     ];
 
-    web_data.data.forEach((i: {
+    this.data.data.forEach((i: {
       id: any;
       username: string;
     }) => {
@@ -59,7 +53,7 @@ class SitestatsAdminTemplate {
       .addText(i18n.t("sitestats.admins.more", lang));
 
     // set card footer
-    message = new BaseFooterTemplate().add(message);
+    message.addFooter()
 
     return message;
   }

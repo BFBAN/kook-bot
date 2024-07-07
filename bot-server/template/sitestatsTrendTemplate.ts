@@ -1,34 +1,33 @@
 import { Card } from "kbotify";
 import i18n from "../../langage";
-import { BaseFooterTemplate } from "./baseFooterTemplate";
 import config from "../../config";
+import BaseTemplate from "./BaseTemplate";
+import { CardExtend } from "../../data/CardExp";
 
-class SitestatsTrendTemplate {
-  trendData: any;
-  help: string | undefined;
+class SitestatsTrendTemplate extends BaseTemplate {
+  data: any;
 
-  constructor(data: any) {
-    this.trendData = data;
-  }
-
-  generation(help: string, { lang = config.i18n.default } = {}): Card {
-    let message = new Card();
-    let trend_data = this.trendData;
+  public get generation(): Card {
+    let message = new CardExtend();
+    let trend_data = this.data;
 
     if (!trend_data) {
       return message;
     }
 
     message
-      .addTitle(i18n.t("sitestats.trend.title", lang))
+      .addTitle(i18n.t("sitestats.trend.title", this.lang))
       .addDivider()
-      .addText(help ?? "-")
+      .addText(this.help ?? "-")
       .addDivider();
 
     // 标题
-    let fields = [{ "type": "kmarkdown", "content": `**${i18n.t('sitestats.trend.index', lang)}**` },
-      { "type": "kmarkdown", "content": `**${i18n.t('sitestats.trend.username', lang)}**` },
-      { "type": "kmarkdown", "content": `**${i18n.t('sitestats.trend.hot', lang)}** / **${i18n.t('sitestats.trend.commentsNum', lang)}** / **${i18n.t('sitestats.trend.viewNum', lang)}**` }];
+    let fields = [{ "type": "kmarkdown", "content": `**${i18n.t("sitestats.trend.index", this.lang)}**` },
+      { "type": "kmarkdown", "content": `**${i18n.t("sitestats.trend.username", this.lang)}**` },
+      {
+        "type": "kmarkdown",
+        "content": `**${i18n.t("sitestats.trend.hot", this.lang)}** / **${i18n.t("sitestats.trend.commentsNum", this.lang)}** / **${i18n.t("sitestats.trend.viewNum", this.lang)}**`
+      }];
     let index = 1;
 
     // 插入内容
@@ -49,16 +48,14 @@ class SitestatsTrendTemplate {
     message
       .addModule({
         type: "section",
-        "accessory": {},
-        "text": {
+        accessory: {},
+        text: {
           "type": "paragraph",
           "cols": 3,
           "fields": fields
         }
-      });
-
-    // set card footer
-    message = new BaseFooterTemplate().add(message);
+      })
+      .addFooter();
 
     return message;
   }
