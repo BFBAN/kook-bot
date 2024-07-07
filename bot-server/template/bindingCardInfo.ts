@@ -1,17 +1,11 @@
 import { Card } from "kbotify";
-import i18n from "../../langage";
 import { BaseFooterTemplate } from "./baseFooterTemplate";
-import config from "../../config";
+import BaseTemplate from "./BaseTemplate";
 
-class BindingCardTemplate {
-  data: any;
-  help: string | undefined;
+import i18n from "../../langage";
 
-  constructor(data: any) {
-    this.data = data;
-  }
-
-  generation({ lang = config.i18n.default } = {}): Card {
+export default class BindingCardTemplate extends BaseTemplate {
+  get generation(): Card {
     let message = new Card();
     let data = this.data;
 
@@ -20,7 +14,7 @@ class BindingCardTemplate {
     }
 
     message
-      .addTitle(i18n.t("sitestats.leaderboard.title", lang))
+      .addTitle(i18n.t("sitestats.leaderboard.title", this.lang))
       .addDivider();
 
     message.addText(`id: ${data.id}`);
@@ -32,5 +26,3 @@ class BindingCardTemplate {
     return message;
   }
 }
-
-export default BindingCardTemplate;

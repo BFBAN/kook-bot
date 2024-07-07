@@ -26,6 +26,11 @@ export default class Api {
         })
       }[env],
 
+      botDocsAddress: new HttpContainer({
+        protocol: BaseHttpType.Https,
+        host: `cabbagelol.github.io/kook-bot-docs/`
+      }),
+
       botServerAddress: {
         development: new HttpContainer({
           protocol: BaseHttpType.Http,

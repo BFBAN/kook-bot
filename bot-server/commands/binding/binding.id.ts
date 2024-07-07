@@ -2,12 +2,13 @@ import commandPack from "../commandPack";
 import db from "../../../db";
 import config from "../../../config";
 
-import { AppCommand, AppFunc, BaseSession } from "kbotify";
+import { AppCommand, AppFunc, BaseSession, Card } from "kbotify";
 import { bot } from "../../../bot";
 import { api } from "../../../lib";
 import Api from "../../../lib/api";
 import { ErrorTemplate } from "../../template/errorTemplate";
 import { httpBfban } from "../../../lib";
+import { BaseFooterTemplate } from "../../template/baseFooterTemplate";
 
 export class BindingId extends AppCommand {
   code = "id";
@@ -23,26 +24,85 @@ export class BindingId extends AppCommand {
         return session.reply(this.help);
       }
 
-      await session.send(`你正在创建一个KOOK(${session.user.username})🔗BFBAN(${mainValue})档案，此数据将保存在机器人中，你无需输入账户密码。\n\t你需要注意来自BFBAN授权邮件`);
+      let context = new Card()
+        .addText("通知")
+        .addDivider()
+        .addModule({
+          "type": "section",
+          "text": {
+            "type": "kmarkdown",
+            "content": `你正在创建一个KOOK(${session.user.username})🔗BFBAN(${mainValue})档案，绑定须知:\n
+  - 此数据将保存在机器人中，与BFBAN无直接关联，过程中你不需要输入BFBAN账户。\n
+  - 需要注意来自BFBAN授权邮件，通过邮件内的链接确认\n
+  - 你有24小时授权确认，超时授权确认将失效\n
+  - 授权的身份令牌存在使用时期，如果过期，机器人需要重新授权\n
+  - 授权的令牌无法修改BFBAN账户名、密码登敏感操作\n
+  - 遇到第三方恶意使用授权，请告知BFBAN，将回收权限\n`
+          }
+        })
+        .addDivider()
+        .addModule({
+          "type": "action-group",
+          "elements": [
+            {
+              "type": "button",
+              "theme": "primary",
+              "click": "return-val",
+              "value": "ok",
+              "text": {
+                "type": "plain-text",
+                "content": "了解确认"
+              }
+            }
+          ]
+        });
 
-      // 检查BFBAN ID是否有效
-      await this.checkBFBANId(mainValue, session);
+      let sendId = await session.sendCard(new BaseFooterTemplate().add(context).toString());
 
-      // 检查绑定过往授权请求状态
-      await this.checkAuthStatus(mainValue, session);
+      bot.message.on("buttonEvent", async (event) => {
+        if (
+          event.targetMsgId !== sendId.msgSent?.msgId &&
+          session.userId !== event.userId
+        ) {
+          return;
+        }
 
-      // 检查用户表有注册此账户
-      const checkUser = await db("users").where({ bfbanUserId: mainValue }).first();
+        await session.updateMessage(sendId.msgSent?.msgId!, new Card({
+          "type": "card",
+          "theme": "secondary",
+          "size": "lg",
+          "modules": [
+            {
+              "type": "section",
+              "text": {
+                "type": "plain-text",
+                "content": `已确认须知，你也可以在此处再次查看(${Api.host.botDocsAddress!.url})`
+              }
+            }
+          ]
+        }).toString());
 
-      if (checkUser) {
+        // 检查BFBAN ID是否有效 and 检查绑定过往授权请求状态
+        if (!await this.checkBFBANId(mainValue, session) || !await this.checkAuthStatus(mainValue, session)) {
+          return;
+        }
+
+        // 检查用户表有注册此账户
+        const checkUser = await db("users").where({ bfbanUserId: mainValue }).first();
+
+        if (checkUser) {
+          await this.onBindingBfbanAccount(mainValue, session, other);
+          return session.reply("已与BFBAN联系，请注意BFBAN授权邮件");
+        }
+
+        // 创建用户
+        await this.createUser(mainValue, session);
         await this.onBindingBfbanAccount(mainValue, session, other);
-        return session.reply("已与BFBAN联系，请注意BFBAN授权邮件");
-      }
 
-      // 创建用户
-      await this.createUser(mainValue, session);
-      await this.onBindingBfbanAccount(mainValue, session, other);
-      return session.reply("已成功创建BFBAN BOT for Kook账户，且已与BFBAN联系，请注意BFBAN授权邮件");
+        return session.reply("已与BFBAN联系，请注意BFBAN授权邮件");
+
+      });
+
     } catch (err) {
       await session.replyCard(new ErrorTemplate(err).generation({
         lang: other.get("lang"),
@@ -55,10 +115,12 @@ export class BindingId extends AppCommand {
   /**
    * 检查BFBAN id是否有效
    * @param mainValue
+   * @param session
    */
-  async checkBFBANId(mainValue: any, session: any) {
+  async checkBFBANId(mainValue: any, session: BaseSession) {
     if (typeof mainValue !== "number" && mainValue <= 0) {
-      return session.reply("错误的ID格式");
+      await session.reply("错误的ID格式");
+      return false;
     }
 
     const result = await httpBfban.get(api.bfbanApi.user_info, {
@@ -67,7 +129,8 @@ export class BindingId extends AppCommand {
       d = result.data;
 
     if (d.error === 1) {
-      throw "无法找到BFBAN用户,请检查是否有效";
+      await session.reply("无法找到BFBAN用户,请检查是否有效");
+      return false;
     }
 
     return true;
@@ -78,13 +141,12 @@ export class BindingId extends AppCommand {
    * @param mainValue
    * @param session
    */
-  async createUser(mainValue: any, session: any) {
+  async createUser(mainValue: any, session: BaseSession) {
     let creationTime = new Date().getTime();
     const { id, username, avatar } = session.user;
     const newUser = await db("users").insert({
-      // bfbanUserId: mainValue,
-      // kookUserId: session.user.id,
       creationTime,
+      username: session.user.username,
       valid: 1
     });
 
@@ -103,19 +165,21 @@ export class BindingId extends AppCommand {
    * @param mainValue
    * @param session
    */
-  async checkAuthStatus(mainValue: any, session: any) {
+  async checkAuthStatus(mainValue: any, session: BaseSession) {
     const checkStatus = await db("binding_auth_history").where({ userId: mainValue, platform: "bfban" }).first(),
       nowTime = new Date().getTime();
 
     // 检查申请
-    if (checkStatus && checkStatus.creationTime <= nowTime + 1000 * 60 * 3) {
-      return session.reply("已申请授权，正在冷却 请在3分钟后操作");
+    if (checkStatus && nowTime <= checkStatus.creationTime + (config.__DEBUG__ ? (0) : (1000 * 60 * 3))) {
+      await session.reply("已申请过授权，你需要冷却，请在3分钟后操作");
+      return false;
     }
 
     if (checkStatus) {
-      return db("binding_auth_history").where({ userId: mainValue }).update({
+      db("binding_auth_history").where({ userId: mainValue }).update({
         creationTime: nowTime
       });
+      return true;
     }
 
     await db("binding_auth_history").insert({
@@ -123,6 +187,8 @@ export class BindingId extends AppCommand {
       creationTime: nowTime,
       platform: "bfban"
     });
+
+    return true;
   }
 
   /**
@@ -130,27 +196,25 @@ export class BindingId extends AppCommand {
    * @param id
    * @param session
    */
-  async onBindingBfbanAccount(id: number, session: any, other: any) {
-    // todo 实现队列，2分钟内，每隔十秒查询数据库检查数据，超出则移除队列中
-
+  async onBindingBfbanAccount(id: number, session: BaseSession, other: any) {
     if (!id || id <= 0 || id > Number.MAX_VALUE) {
       throw "Unexpected value";
     }
 
     try {
       const result = await httpBfban.post(api.bfbanApi.service_externalAuth, {
-        data: {
-          id,
-          appName: config.botName,
-          appId: config.botId,
-          EXPIRES_IN: 604800000,
-          CALLBACK_PATH: `${Api.host.botServerAddress!.url}api/authCallback`
-        }
-      });
+          data: {
+            id,
+            appName: config.botName,
+            appId: config.botId,
+            EXPIRES_IN: 604800000,
+            CALLBACK_PATH: `${Api.host.botServerAddress!.url}api/authCallback`
+          }
+        }),
+        d = result.data;
 
-      if (result.data.success === 1) {
-        session.reply("检查你的邮件，是否收到BFBAN授权邮件");
-        return;
+      if (d.error === 1) {
+        throw d.message;
       }
     } catch (err) {
       bot.logger.error(err);

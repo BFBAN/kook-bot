@@ -23,7 +23,7 @@ export class BindingCheck extends AppCommand {
         return session.reply(`抱歉,没找到与机器人绑定的${session.user.username}账户信息, 请输入.binding id {你的BFBAN ID}来建立档案`);
       }
 
-      return await session.replyCard(new BindingCardTemplate(user).generation({ lang: this.help }));
+      return await session.replyCard(new BindingCardTemplate().addAttr({lang: other.get("lang"), data: user }).generation);
     } catch (err) {
       await session.replyCard(new ErrorTemplate(err).generation({
         lang: other.get("lang"),
