@@ -2,7 +2,7 @@ import { Card } from "kbotify";
 import i18n from "../../langage";
 import config from "../../config";
 import BaseTemplate from "./BaseTemplate";
-import { CardExtend } from "../../data/CardExp";
+import { CardExtend } from "../../data/cardExp";
 
 class SitestatsAdminTemplate extends BaseTemplate {
   showListNumber: number = 20;

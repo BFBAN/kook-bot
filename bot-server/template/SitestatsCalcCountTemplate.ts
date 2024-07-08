@@ -1,7 +1,7 @@
 import { Card } from "kbotify";
 import i18n from "../../langage";
 import BaseTemplate from "./BaseTemplate";
-import { CardExtend } from "../../data/CardExp";
+import { CardExtend } from "../../data/cardExp";
 
 class SitestatsCalcCountTemplate extends BaseTemplate {
   public get generation(): Card {

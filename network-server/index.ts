@@ -4,7 +4,7 @@ import db from "../db";
 import config from "../config";
 import { bot } from "../bot";
 import { Card } from "kbotify";
-import { CardExtend } from "../data/CardExp";
+import { CardExtend } from "../data/cardExp";
 
 const router = express.Router();
 

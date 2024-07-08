@@ -1,16 +1,17 @@
 import config from "../../../config";
 
-import { Card, MenuCommand } from "kbotify";
+import { MenuCommand } from "kbotify";
 import { reportName } from "./report.name";
+import { CardExtend } from "../../../data/cardExp";
 
 class ReportMenu extends MenuCommand {
   code = "report";
   trigger = "report";
   help = "";
 
-  menu = new Card()
-    .addTitle(this.code)
-    .addText(`${config.botWebSite}/docs/command/${this.trigger}`)
+  menu: any = new CardExtend()
+    .addTitle(`🔴 ${this.code}`, true)
+    .addMenu(this)
     .toString();
   useCardMenu = true;
 }

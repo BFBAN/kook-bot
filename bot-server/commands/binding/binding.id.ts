@@ -8,20 +8,22 @@ import { api } from "../../../lib";
 import Api from "../../../lib/api";
 import { ErrorTemplate } from "../../template/errorTemplate";
 import { httpBfban } from "../../../lib";
-import { CardExtend } from "../../../data/CardExp";
+import { CardExtend } from "../../../data/cardExp";
 
 export class BindingId extends AppCommand {
   code = "id";
   trigger = "id";
-  help = ".binding id [id:number]";
+  help = ".binding id [bfbanAccountId:number]";
   intro = "binding.id.intro";
 
   func: AppFunc<BaseSession> = async (session) => {
-    const { mainValue, other } = new commandPack.CommandFactory().pack(session.args);
+    const commandTool: any = new commandPack.CommandFactory(this).addAttr({ session }),
+      { mainValue, other } = commandTool.pack(session.args);
 
     try {
-      if (!session.args.length) {
-        return session.reply(this.help);
+      // 检查参数有效性，并丢出提示
+      if (!commandTool.check()) {
+        return;
       }
 
       let context = new CardExtend()
@@ -105,10 +107,10 @@ export class BindingId extends AppCommand {
       });
 
     } catch (err) {
-      await session.replyCard(new ErrorTemplate(err).generation({
-        lang: other.get("lang"),
-        session
-      }));
+      await session.replyCard(new ErrorTemplate()
+        .addError(err)
+        .addSession(session)
+        .addAttr({ lang: other.get("lang") }).generation);
       bot.logger.error(err);
     }
   };

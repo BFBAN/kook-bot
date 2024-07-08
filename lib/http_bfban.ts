@@ -9,7 +9,6 @@ export default class HttpBfban extends Http {
 
   /**
    * token
-   * @param data
    */
   public createToken() {
     this.HTTP.interceptors.request.use((request: any) => {

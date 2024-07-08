@@ -13,7 +13,8 @@ class SitestatsSite extends AppCommand {
   intro = "sitestats.site.intro";
 
   func: AppFunc<BaseSession> = async (session) => {
-    const { mainValue, other } = new commandPack.CommandFactory().pack(session.args);
+    const commandTool: any = new commandPack.CommandFactory(this).addAttr({ session }),
+      { mainValue, other } = commandTool.pack(session.args);
 
     try {
       let resStatistics = await this.getStatistics(other);
@@ -23,12 +24,12 @@ class SitestatsSite extends AppCommand {
         return;
       }
 
-      await session.replyCard(new SitestatsCalcCountTemplate().addAttr({ lang: other.get("lang"), data: resStatistics }).generation);
+      await session.replyCard(new SitestatsCalcCountTemplate().addAttr({ lang: other.get("lang"), data: resStatistics.data }).generation);
     } catch (err) {
-      await session.replyCard(new ErrorTemplate(err).generation({
-        lang: other.get("lang"),
-        session
-      }));
+      await session.replyCard(new ErrorTemplate()
+        .addError(err)
+        .addSession(session)
+        .addAttr({ lang: other.get("lang") }).generation);
       bot.logger.error(err);
     }
   };
@@ -56,7 +57,7 @@ class SitestatsSite extends AppCommand {
       throw d.message;
     }
 
-    return result;
+    return d;
   }
 }
 

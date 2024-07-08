@@ -14,7 +14,8 @@ export class BindingCheck extends AppCommand {
   intro = "binding.check.intro";
 
   func: AppFunc<BaseSession> = async (session) => {
-    const { mainValue, other } = new commandPack.CommandFactory().pack(session.args);
+    const commandTool: any = new commandPack.CommandFactory(this).addAttr({ session }),
+      { mainValue, other } = commandTool.pack(session.args);
 
     try {
       const user = await db("binding_kook").where({ kookId: session.user.id }).first();
@@ -25,10 +26,10 @@ export class BindingCheck extends AppCommand {
 
       return await session.replyCard(new BindingCardTemplate().addAttr({lang: other.get("lang"), data: user }).generation);
     } catch (err) {
-      await session.replyCard(new ErrorTemplate(err).generation({
-        lang: other.get("lang"),
-        session
-      }));
+      await session.replyCard(new ErrorTemplate()
+        .addError(err)
+        .addSession(session)
+        .addAttr({ lang: other.get("lang") }).generation);
       bot.logger.error(err);
     }
   };

@@ -1,6 +1,6 @@
 import i18n from "../../langage";
 import BaseTemplate from "./BaseTemplate";
-import { CardExtend } from "../../data/CardExp";
+import { CardExtend } from "../../data/cardExp";
 
 class WidgetBaseTemplate extends BaseTemplate {
   url: string = "";

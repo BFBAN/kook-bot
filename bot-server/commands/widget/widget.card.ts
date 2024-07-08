@@ -15,11 +15,13 @@ class WidgetCard extends AppCommand {
   intro = "widget.intro";
 
   func: AppFunc = async (session) => {
-    const { mainValue, other } = new commandPack.CommandFactory().pack(session.args);
+    const commandTool: any = new commandPack.CommandFactory(this).addAttr({ session }),
+      { mainValue, other } = commandTool.pack(session.args);
 
     try {
-      if (!session.args.length) {
-        return session.reply(this.help);
+      // 检查参数有效性，并丢出提示
+      if (!commandTool.check()) {
+        return;
       }
 
       if (!mainValue || !new RegExp(/^[0-9]+.?[0-9]*/).test(mainValue)) {
@@ -34,10 +36,7 @@ class WidgetCard extends AppCommand {
           lang: other.get("lang")
         }).generation);
       } else {
-        await session.replyCard(new ErrorTemplate(i18n.t("widget.generationError", other.get("lang"))).generation({
-          lang: other.get("lang"),
-          session
-        }));
+        throw i18n.t("widget.generationError", other.get("lang"));
       }
 
       // 移除提示
@@ -45,10 +44,10 @@ class WidgetCard extends AppCommand {
         await bot.API.message.delete(<string>tipSendId.msgSent?.msgId);
       }
     } catch (err) {
-      await session.replyCard(new ErrorTemplate(err).generation({
-        lang: other.get("lang"),
-        session
-      }));
+      await session.replyCard(new ErrorTemplate()
+        .addError(err)
+        .addSession(session)
+        .addAttr({ lang: other.get("lang") }).generation);
       bot.logger.error(err);
     }
   };

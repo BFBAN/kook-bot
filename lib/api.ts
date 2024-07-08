@@ -8,7 +8,7 @@ interface ApiT {
 export default class Api {
   /// 主机配置清单
   static get host() {
-    let env: string = "development";
+    let env: string = config.__DEBUG__ ? "development" : "production";
 
     return {
       /// BFBAN 接口
@@ -26,11 +26,19 @@ export default class Api {
         })
       }[env],
 
+      // bfban网站
+      bfbanWebsite: new HttpContainer({
+        protocol: BaseHttpType.Https,
+        host: `bfban.com`
+      }),
+
+      // 机器人文档网站
       botDocsAddress: new HttpContainer({
         protocol: BaseHttpType.Https,
         host: `cabbagelol.github.io/kook-bot-docs/`
       }),
 
+      // 机器人服务
       botServerAddress: {
         development: new HttpContainer({
           protocol: BaseHttpType.Http,
@@ -44,6 +52,7 @@ export default class Api {
         })
       }[env],
 
+      // 本地地址
       localAddress: new HttpContainer({
         protocol: BaseHttpType.Http,
         host: `${config.address}:${config.port}`

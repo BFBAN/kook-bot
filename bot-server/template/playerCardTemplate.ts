@@ -3,7 +3,7 @@ import config from "../../config";
 import i18n from "../../langage";
 import { Card } from "kbotify";
 import BaseTemplate from "./BaseTemplate";
-import { CardExtend } from "../../data/CardExp";
+import { CardExtend } from "../../data/cardExp";
 
 class PlayerCardTemplate extends BaseTemplate {
   public get generation(): Card {

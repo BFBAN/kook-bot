@@ -9,11 +9,11 @@ export default class httpBfbanProxyUser extends Http {
 
   /**
    * token
-   * @param data
+   * @param token
    */
-  public createToken() {
+  public createToken(token: string) {
     this.HTTP.interceptors.request.use((request: any) => {
-      request.headers.set("x-access-token", config.account.token);
+      request.headers.set("x-access-token", token);
       return request;
     });
     return this.HTTP;

@@ -69,7 +69,7 @@
   "admin": {
     "help": "管理机器人"
   },
-  "checkban": {
+  "checkplayer": {
     "help": "检查玩家",
     "name": {
       "title": "存在多个结果",
@@ -107,6 +107,31 @@
     "hot": {
       "intro":"查询网站近期热门案件",
       "notContent": "暂无排行数据"
+    },
+    "leaderboard": {
+      "title": "排行榜",
+      "description": "点击这里查看完整[{name}]({website})",
+      "community": {
+        "title": "社区贡献",
+        "index": "排名",
+        "username": "名称",
+        "value": "数量"
+      },
+      "check": {
+        "title": "检查绑定账户"
+      },
+      "report": {
+        "title": "举报排行",
+        "index": "排名",
+        "username": "名称",
+        "value": "数量"
+      },
+      "achievement": {
+        "title": "成就排行",
+        "index": "排名",
+        "username": "名称",
+        "value": "成就价值"
+      }
     },
     "trend": {
       "title": "热门案件",

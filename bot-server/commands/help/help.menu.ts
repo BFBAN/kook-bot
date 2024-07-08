@@ -1,11 +1,12 @@
-import { AppCommand, AppFunc, BaseSession, Card } from "kbotify";
+import { AppCommand, AppFunc, BaseSession, Card, KBotify, MenuCommand } from "kbotify";
 
 import { bot } from "../../../bot";
 import { CommandTypes } from "kbotify/dist/core/types";
 import config from "../../../config";
 import i18n from "../../../langage";
 import commandPack from "../commandPack";
-import { CardExtend } from "../../../data/CardExp";
+import { CardExtend } from "../../../data/cardExp";
+import { ErrorTemplate } from "../../template/errorTemplate";
 
 class HelpMenu extends AppCommand {
   code = "help";
@@ -13,44 +14,55 @@ class HelpMenu extends AppCommand {
   help = "help.help";
 
   func: AppFunc<BaseSession> = async (session) => {
-    let message = new CardExtend();
-    let content: string = "";
+    const commandTool: any = new commandPack.CommandFactory(this).addAttr({ session }),
+      { mainValue, other } = commandTool.pack(session.args);
 
-    const { mainValue, other } = new commandPack.CommandFactory().pack(session.args);
+    try {
+      let message = new CardExtend(),
+        content: string = "";
 
-    content += `\`.${this.trigger}\` \t | \t [docs](${config.botWebSite}/docs/command/${this.trigger})\n`;
-    content += `----\n`
+      message.addTitle(`📚 ${i18n.t(this.help, other.get("lang"))}`, true).addDivider();
 
-    bot?.commandMap.forEach(i => {
-      switch (i.type) {
-        case CommandTypes.APP:
-          break;
-        case CommandTypes.MENU:
-          content += `\`.${i.trigger}\` \t | \t [docs](${config.botWebSite}/docs/command/${i.trigger})\n`;
+      content += `\`.${this.trigger}\` \t | \t [docs](${config.botWebSite}/docs/command/${this.trigger})\n`;
+      content += `----\n`;
 
-          i.commandMap.forEach(j => {
-            content += `\`.${i.trigger} ${j.trigger}\` \t | \t ${i18n.t(j.intro, other.get("lang") || config.i18n.default)} : [docs](${config.botWebSite}/docs/command/${i.trigger}#${j.trigger})\n`;
-          });
+      bot.commandMap.forEach(i => {
+        switch (i.type) {
+          case CommandTypes.APP:
+            break;
+          case CommandTypes.MENU:
+            content += `\`.${i.trigger}\` \t | \t [docs](${config.botWebSite}/docs/command/${i.trigger})\n`;
 
-          content += `----\n`;
-          break;
-      }
-    });
+            i.commandMap.forEach(j => {
+              content += `\`.${i.trigger} ${j.trigger}\` \t | \t ${i18n.t(j.intro, other.get("lang") || config.i18n.default)} : [docs](${config.botWebSite}/docs/command/${i.trigger}#${j.trigger})\n`;
+            });
 
-    message
-      .addModule({
-        type: "section",
-        "text": {
-          "type": "kmarkdown",
-          "content": content
+            content += `----\n`;
+            break;
         }
-      })
-      .addText(i18n.t("base.button.document", other.get("lang")) + ":" + config.botWebSite);
+      });
 
-    // set card footer
-    message.addFooter();
+      message
+        .addModule({
+          type: "section",
+          "text": {
+            "type": "kmarkdown",
+            "content": content
+          }
+        })
+        .addText(`${i18n.t("base.button.document", other.get("lang"))}:${config.botWebSite}`);
 
-    return session.replyCard(message);
+      // set card footer
+      message.addFooter();
+
+      return session.replyCard(message);
+    } catch (err) {
+      await session.replyCard(new ErrorTemplate()
+        .addError(err)
+        .addSession(session)
+        .addAttr({ lang: other.get("lang") }).generation);
+      bot.logger.error(err);
+    }
   };
 }
 

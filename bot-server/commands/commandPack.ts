@@ -1,5 +1,8 @@
 import { bot } from "../../bot";
 import { filtration } from "../../lib/util";
+import { AppCommand, BaseSession } from "kbotify";
+import { CardExtend } from "../../data/cardExp";
+import config from "../../config";
 
 declare class baseCommandFactory {
 
@@ -52,6 +55,39 @@ class baseCommandData {
 }
 
 class CommandFactory {
+  self: AppCommand;
+  session: BaseSession | undefined;
+
+  constructor(self: AppCommand) {
+    this.self = self;
+  }
+
+  addAttr(d: { session?: BaseSession }) {
+    this.session = d.session;
+    return this;
+  }
+
+  public check(): boolean {
+    const { mainValue } = this.pack(this.session?.args as []);
+
+    if (mainValue == "" || !mainValue) {
+      let card = new CardExtend()
+        .addTitle(":(")
+        .addDivider()
+        .addText("缺少参数，完整的命令应该如下:")
+        .addText(this.self.help)
+        .addText(`[]内的值表示必选，()内的值表示可选参数，如果依旧不清楚，请访问${config.name}的使用文档`)
+        .addFooter();
+      this.session?.sendCard(card);
+      return false;
+    }
+    return true;
+  }
+
+  public get isValid(): boolean {
+    return this.check();
+  }
+
   /***
    * 打包ages的命令
    * @param ages

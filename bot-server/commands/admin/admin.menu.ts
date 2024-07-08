@@ -9,7 +9,7 @@ class AdminMenu extends MenuCommand {
   help = "";
 
   menu = new Card()
-    .addTitle(this.code)
+    .addTitle(`🔴 ${this.code}`, true)
     .addText(`${config.botWebSite}/docs/command/${this.trigger}`)
     .toString();
   useCardMenu = true;

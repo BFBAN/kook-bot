@@ -20,11 +20,13 @@ class CheckPlayerName extends AppCommand {
   timer: any = null;
 
   func: AppFunc = async (session) => {
-    const { mainValue, other } = new commandPack.CommandFactory().pack(session.args);
+    const commandTool: any = new commandPack.CommandFactory(this).addAttr({ session }),
+      { mainValue, other } = commandTool.pack(session.args);
 
     try {
-      if (!session.args.length) {
-        return session.reply(this.help);
+      // 检查参数有效性，并丢出提示
+      if (!commandTool.check()) {
+        return;
       }
 
       const that = this;
@@ -49,11 +51,7 @@ class CheckPlayerName extends AppCommand {
       if (resSearch.data.length > 1) {
         // 监听按钮
         bot.on("buttonClick", async event => {
-          if (
-            event.targetMsgId == replyId.msgSent.msgId &&
-            event.type == "buttonClick" &&
-            session.userId == event.userId
-          ) {
+          if (session.userId == event.userId) {
             const selectItemData = JSON.parse(event.value);
             await that.sendPlayerCard(
               resSearch,
@@ -114,10 +112,10 @@ class CheckPlayerName extends AppCommand {
       }
 
     } catch (err) {
-      await session.replyCard(new ErrorTemplate(err).generation({
-        lang: other.get("lang"),
-        session
-      }));
+      await session.replyCard(new ErrorTemplate()
+        .addError(err)
+        .addSession(session)
+        .addAttr({ lang: other.get("lang") }).generation);
       bot.logger.error(err);
     }
   };
@@ -154,30 +152,28 @@ class CheckPlayerName extends AppCommand {
   }
 
   /**
-   * 获取案件状态
+   * 获取案件信息
    * @param id
    * @protected
    */
   protected async getPlayerInfo(id: number): Promise<AxiosResponse> {
     if (!id) {
-      throw "id";
+      throw "Missing id";
     }
 
-    return new Promise(async (resolve, reject) => {
-      const result = await httpBfban.get(api.bfbanApi.players, {
-          params: {
-            "history": true,
-            "personaId": id
-          }
-        }),
-        d = result.data;
+    const result = await httpBfban.get(api.bfbanApi.cheaters, {
+        params: {
+          "history": true,
+          "personaId": id
+        }
+      }),
+      d = result.data;
 
-      if (d.error === 1) {
-        throw d.message;
-      }
+    if (d.error === 1) {
+      throw d.message;
+    }
 
-      return d;
-    });
+    return d;
   }
 
   /**

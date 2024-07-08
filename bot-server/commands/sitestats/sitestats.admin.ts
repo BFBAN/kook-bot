@@ -15,7 +15,8 @@ class SitestatsAdmin extends AppCommand {
   intro = "sitestats.admins.intro";
 
   func: AppFunc<BaseSession> = async (session) => {
-    const { mainValue, other } = new commandPack.CommandFactory().pack(session.args);
+    const commandTool: any = new commandPack.CommandFactory(this).addAttr({ session }),
+      { mainValue, other } = commandTool.pack(session.args);
 
     try {
       let resAdmin = await this.getAdmins(other);
@@ -30,10 +31,10 @@ class SitestatsAdmin extends AppCommand {
         data: resAdmin
       }).generation.toString());
     } catch (err) {
-      await session.replyCard(new ErrorTemplate(err).generation({
-        lang: other.get("lang"),
-        session
-      }));
+      await session.replyCard(new ErrorTemplate()
+        .addError(err)
+        .addSession(session)
+        .addAttr({ lang: other.get("lang") }).generation);
       bot.logger.error(err);
     }
   };

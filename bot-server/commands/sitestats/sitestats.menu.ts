@@ -4,15 +4,16 @@ import { sitestatsSite } from "./sitestats.site";
 import { sitestatsLeaderboard } from "./sitestats.leaderboard";
 
 import config from "../../../config";
+import { CardExtend } from "../../../data/cardExp";
 
 class SitestatsMenu extends MenuCommand {
   code = "sitestats";
   trigger = "sitestats";
   help = "sitestats.help";
 
-  menu = new Card()
-    .addTitle(this.code)
-    .addText(`${config.botWebSite}/docs/command/${this.trigger}`)
+  menu:any = new CardExtend()
+    .addTitle(`🔴 ${this.code}`, true)
+    .addMenu(this)
     .toString();
   useCardMenu = true;
 }

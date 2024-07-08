@@ -9,11 +9,12 @@ import LeaderboardTemplate from "../../template/leaderboardTemplate";
 class SitestatsLeaderboard extends AppCommand {
   code = "leaderboard";
   trigger = "leaderboard";
-  help = ".sitestats leaderboard (isBot:true) (time:weekly) (report:true) (community:true)";
+  help = ".sitestats leaderboard (isBot:true) (time:weekly) (report:true) (community:true) (achievement:true)";
   intro = "sitestats.leaderboard.intro";
 
   func: AppFunc<BaseSession> = async (session) => {
-    const { mainValue, other } = new commandPack.CommandFactory().pack(session.args);
+    const commandTool: any = new commandPack.CommandFactory(this).addAttr({ session }),
+      { mainValue, other } = commandTool.pack(session.args);
 
     try {
       let resStatistics = await this.getLeaderboard(other);
@@ -23,14 +24,12 @@ class SitestatsLeaderboard extends AppCommand {
         return;
       }
 
-      await session.replyCard(new LeaderboardTemplate().addAttr({
-        data: resStatistics
-      }).generation);
+      await session.replyCard(new LeaderboardTemplate().addAttr({ data: resStatistics, help: this.help }).generation);
     } catch (err) {
-      await session.replyCard(new ErrorTemplate(err).generation({
-        lang: other.get("lang"),
-        session
-      }));
+      await session.replyCard(new ErrorTemplate()
+        .addError(err)
+        .addSession(session)
+        .addAttr({ lang: other.get("lang") }).generation);
       bot.logger.error(err);
     }
   };
@@ -46,7 +45,8 @@ class SitestatsLeaderboard extends AppCommand {
           isBot: params.get("isBot") ?? true,
           time: params.get("time") ?? "weekly",
           report: params.get("report") ?? true,
-          community: params.get("community") ?? true
+          community: params.get("community") ?? true,
+          achievement: params.get("achievement") ?? true
         }
       }),
       d = result.data;

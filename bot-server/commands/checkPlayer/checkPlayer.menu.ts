@@ -3,15 +3,16 @@ import config from "../../../config";
 import { Card, MenuCommand } from "kbotify";
 import { checkPlayerId } from "./checkPlayer.id";
 import { checkPlayerName } from "./checkPlayer.name";
+import { CardExtend } from "../../../data/cardExp";
 
 class CheckPlayerMenu extends MenuCommand {
   code = "checkplayer";
   trigger = "checkplayer";
   help = "";
 
-  menu = new Card()
-    .addTitle(this.code)
-    .addText(`${config.botWebSite}/docs/command/${this.trigger}`)
+  menu: any = new CardExtend()
+    .addTitle(`🔴 ${this.code}`, true)
+    .addMenu(this)
     .toString();
   useCardMenu = true;
 }

@@ -1,27 +1,22 @@
-import config from "../../config";
 import i18n from "../../langage";
 
 import { AxiosError } from "axios";
-import { CardExtend } from "../../data/CardExp";
+import { CardExtend } from "../../data/cardExp";
+import BaseTemplate from "./BaseTemplate";
 
-class ErrorTemplate {
+class ErrorBaseTemplate extends BaseTemplate {
   errorContent: any = ":( I have an error";
 
-  constructor(data: any) {
-    if (data) {
-      this.errorContent = data;
-    }
+  addError(context: any) {
+    this.errorContent = context;
+    return this;
   }
+}
 
-  public generation({ lang = config.i18n.default, session: BaseSession = {} } = {}) {
-    let message = new CardExtend({
-      color: "",
-      modules: [],
-      size: "lg",
-      type: "card",
-      theme: "danger"
-    });
-    let content: any = "";
+class ErrorTemplate extends ErrorBaseTemplate {
+  public get generation() {
+    let message = new CardExtend({ color: "", modules: [], size: "lg", type: "card", theme: "danger" });
+    let content: any = this.errorContent;
 
     switch (this.errorContent.constructor) {
       case String:
@@ -37,13 +32,13 @@ class ErrorTemplate {
     }
 
     message
-      .addTitle(i18n.t("error.title", lang))
-      .addText(i18n.t("error.description", lang))
+      .addTitle(i18n.t("error.title", this.lang))
+      .addText(i18n.t("error.description", this.lang))
       .addModule({
         type: "section",
         "text": {
           "type": "kmarkdown",
-          "content": `${i18n.t("error.errorTime", lang) + ":" + new Date().getTime()}`
+          "content": `${i18n.t("error.errorTime", this.lang) + ":" + new Date().getTime()}`
         }
       })
       .addDivider()

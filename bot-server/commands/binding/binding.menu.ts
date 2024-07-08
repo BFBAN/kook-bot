@@ -1,8 +1,9 @@
 import config from "../../../config";
 
-import { Card, MenuCommand } from "kbotify";
+import { BaseSession, Card, MenuCommand, ResultTypes } from "kbotify";
 import { bindingId } from "./binding.id";
 import { bindingCheck } from "./binding.check";
+import { CardExtend } from "../../../data/cardExp";
 
 class BindingMenu extends MenuCommand {
   code = "binding";
@@ -10,9 +11,9 @@ class BindingMenu extends MenuCommand {
   trigger = "binding";
   help = "";
 
-  menu = new Card()
-    .addTitle(this.code)
-    .addText(`${config.botWebSite}/docs/command/${this.trigger}`)
+  menu: any = new CardExtend()
+    .addTitle(`🔴 ${this.code}`, true)
+    .addMenu(this)
     .toString();
   useCardMenu = true;
 }

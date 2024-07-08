@@ -14,11 +14,13 @@ class CheckPlayerId extends AppCommand {
   intro = "checkplayer.id.intro";
 
   func: AppFunc<BaseSession> = async (session) => {
-    const { mainValue, other } = new commandPack.CommandFactory().pack(session.args);
+    const commandTool: any = new commandPack.CommandFactory(this).addAttr({ session }),
+      { mainValue, other } = commandTool.pack(session.args);
 
     try {
-      if (!session.args.length) {
-        return session.reply(this.help);
+      // 检查参数有效性，并丢出提示
+      if (!commandTool.check()) {
+        return;
       }
 
       if (!new RegExp(/^[0-9]+.?[0-9]*/).test(mainValue)) {
@@ -39,10 +41,10 @@ class CheckPlayerId extends AppCommand {
         data: player_info
       }).generation);
     } catch (err) {
-      await session.replyCard(new ErrorTemplate(err).generation({
-        lang: other.get("lang"),
-        session
-      }));
+      await session.replyCard(new ErrorTemplate()
+        .addError(err)
+        .addSession(session)
+        .addAttr({ lang: other.get("lang") }).generation);
       bot.logger.error(err);
     }
   };
@@ -57,21 +59,19 @@ class CheckPlayerId extends AppCommand {
       throw "Unexpected value";
     }
 
-    return new Promise(async (resolve, reject) => {
-      const result = await httpBfban.get(api.bfbanApi.players, {
-          params: {
-            "history": true,
-            "personaId": id
-          }
-        }),
-        d = result.data;
+    const result = await httpBfban.get(api.bfbanApi.cheaters, {
+        params: {
+          "history": true,
+          "personaId": id
+        }
+      }),
+      d = result.data;
 
-      if (d.error === 1) {
-        throw d.message;
-      }
+    if (d.error === 1) {
+      throw d.message;
+    }
 
-      return d;
-    });
+    return d;
   }
 }
 

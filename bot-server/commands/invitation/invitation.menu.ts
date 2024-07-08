@@ -1,22 +1,18 @@
-import { MenuCommand } from "kbotify";
+import { Card, MenuCommand } from "kbotify";
 import config from "../../../config";
-import { CardExtend } from "../../../data/CardExp";
+import { CardExtend } from "../../../data/cardExp";
 
 class InvitationMenu extends MenuCommand {
   code = "invitation";
   trigger = "invitation";
   help = "invitation.help";
-  menu = this.getContent();
+
+  menu: any | Card = new CardExtend()
+    .addTitle("🔗👉🏻🤖", true)
+    .addDivider()
+    .addText(config.kookBotInviteUrl)
+    .addFooter();
   useCardMenu = true;
-
-  protected getContent(): string {
-    let message = new CardExtend();
-    message.addText("🔗👉🏻🤖: " + config.kookBotInviteUrl);
-
-    // set card footer
-    message.addFooter();
-    return message.toString();
-  }
 }
 
 export const invitationMenu = new InvitationMenu();
