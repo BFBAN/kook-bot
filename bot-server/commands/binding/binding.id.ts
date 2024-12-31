@@ -87,6 +87,20 @@ export class BindingId extends AppCommand {
 
         // 检查BFBAN ID是否有效 and 检查绑定过往授权请求状态
         if (!await this.checkBFBANId(mainValue, session) || !await this.checkAuthStatus(mainValue, session)) {
+          await session.updateMessage(sendId.msgSent?.msgId!, new Card({
+            "type": "card",
+            "theme": "secondary",
+            "size": "lg",
+            "modules": [
+              {
+                "type": "section",
+                "text": {
+                  "type": "plain-text",
+                  "content": `取消绑定，已绑定或联BAN不正确`
+                }
+              }
+            ]
+          }).toString());
           return;
         }
 

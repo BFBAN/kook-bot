@@ -26,8 +26,8 @@ class SearchListTemplate {
     }
 
     message
-      .addTitle(i18n.t("checkban.name.title", lang))
-      .addText(i18n.t("checkban.name.description", lang))
+      .addTitle(i18n.t("checkplayer.name.title", lang))
+      .addText(i18n.t("checkplayer.name.description", lang))
       .addDivider()
       .addModule({
         type: "section",
@@ -53,7 +53,7 @@ class SearchListTemplate {
           }),
           "text": {
             "type": "plain-text",
-            "content": i18n.t("checkban.select", lang)
+            "content": i18n.t("checkplayer.select", lang)
           }
         },
         "text": {
@@ -83,10 +83,10 @@ class SearchListTemplate {
     }
 
     message
-      .addTitle(i18n.t("checkban.name.title", lang))
-      .addText(i18n.t("checkban.name.description", lang))
+      .addTitle(i18n.t("checkplayer.name.title", lang))
+      .addText(i18n.t("checkplayer.name.description", lang))
       .addDivider()
-      .addText(i18n.t("checkban.name.timeoutPrompt", lang));
+      .addText(i18n.t("checkplayer.name.timeoutPrompt", lang));
 
     // set card footer
     message.addFooter();

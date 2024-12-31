@@ -24,14 +24,14 @@ class CheckPlayerId extends AppCommand {
       }
 
       if (!new RegExp(/^[0-9]+.?[0-9]*/).test(mainValue)) {
-        await session.reply(i18n.t("checkban.id.typeError", other.get("lang")));
+        await session.reply(i18n.t("checkplayer.id.typeError", other.get("lang")));
         return;
       }
 
       let player_info = await this.getPlayerInfo(mainValue);
 
       if (!player_info) {
-        await session.reply(i18n.t("checkban.id.notSuchPlayer", other.get("lang")));
+        await session.reply(i18n.t("checkplayer.id.notSuchPlayer", other.get("lang")));
         return;
       }
 

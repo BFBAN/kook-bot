@@ -35,11 +35,11 @@ class CheckPlayerName extends AppCommand {
       let resSearch = await this.onSearch(mainValue, other);
 
       if (!resSearch) {
-        return session.reply(i18n.t("checkban.name.noContent", other.get("lang")));
+        return session.reply(i18n.t("checkplayer.name.noContent", other.get("lang")));
       }
 
       if (mainValue.length <= 3) {
-        return session.reply(i18n.t("checkban.name.underLengthError", other.get("lang")));
+        return session.reply(i18n.t("checkplayer.name.underLengthError", other.get("lang")));
       }
 
       // 生成搜索列表卡片
@@ -69,7 +69,7 @@ class CheckPlayerName extends AppCommand {
           // 选择器仅在0到搜索结果长度之内
           if (selectNumber >= 0 && selectNumber <= (other.get("limit") ?? 5)) {
             if (!resSearch.data[selectNumber].get("originPersonaId")) {
-              await session.reply(i18n.t("checkban.name.typeError", other.get("lang")));
+              await session.reply(i18n.t("checkplayer.name.typeError", other.get("lang")));
             }
 
             await that.sendPlayerCard(
@@ -80,7 +80,7 @@ class CheckPlayerName extends AppCommand {
               session
             );
           } else {
-            await session.reply(i18n.t("checkban.name.typeError", other.get("lang")));
+            await session.reply(i18n.t("checkplayer.name.typeError", other.get("lang")));
           }
         });
 
@@ -106,7 +106,7 @@ class CheckPlayerName extends AppCommand {
             session
           );
         } else {
-          await session.reply(i18n.t("checkban.name.noContent", other.get("lang")));
+          await session.reply(i18n.t("checkplayer.name.noContent", other.get("lang")));
         }
 
       }
@@ -147,7 +147,7 @@ class CheckPlayerName extends AppCommand {
         data: player_info
       }).generation.toString());
     } else {
-      await session.reply(i18n.t("checkban.name.noContent", other.get("lang")));
+      await session.reply(i18n.t("checkplayer.name.noContent", other.get("lang")));
     }
   }
 

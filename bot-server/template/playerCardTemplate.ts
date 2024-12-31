@@ -55,7 +55,7 @@ class PlayerCardTemplate extends BaseTemplate {
     player_i18n_status = status_config[player_info?.data.status.toString() || "default"];
 
     message
-      .addTitle(i18n.t("checkban.id.title", this.lang))
+      .addTitle(i18n.t("checkplayer.id.title", this.lang))
       .addDivider()
       .addModule({
         "type": "context",
@@ -73,7 +73,7 @@ class PlayerCardTemplate extends BaseTemplate {
           },
           {
             "type": "kmarkdown",
-            "content": ` (${player_info.data.id}) · [${i18n.t("checkban.share", this.lang)}](${player_url + "/share"}) · [${i18n.t("checkban.detail", this.lang)}](${player_url})`
+            "content": ` (${player_info.data.id}) · [${i18n.t("checkplayer.share", this.lang)}](${player_url + "/share"}) · [${i18n.t("checkplayer.detail", this.lang)}](${player_url})`
           }
         ]
       })
@@ -86,27 +86,27 @@ class PlayerCardTemplate extends BaseTemplate {
           "fields": [
             {
               "type": "kmarkdown",
-              "content": `**${i18n.t("checkban.status", this.lang)}**\n(font)${i18n.t(`base.status.${player_info?.data.status}`, this.lang)}(font)[${player_i18n_status || "default"}]`
+              "content": `**${i18n.t("checkplayer.status", this.lang)}**\n(font)${i18n.t(`base.status.${player_info?.data.status}`, this.lang)}(font)[${player_i18n_status || "default"}]`
             },
             {
               "type": "kmarkdown",
-              "content": `**${i18n.t("checkban.games", this.lang)}**\n${player_i18n_games.join(",")}`
+              "content": `**${i18n.t("checkplayer.games", this.lang)}**\n${player_i18n_games.join(",")}`
             },
             {
               "type": "kmarkdown",
-              "content": `**${i18n.t("checkban.methods", this.lang)}**\n${player_i18n_methods.length >= 0 ? player_i18n_methods.join(" ") : "-"}`
+              "content": `**${i18n.t("checkplayer.methods", this.lang)}**\n${player_i18n_methods.length >= 0 ? player_i18n_methods.join(" ") : "-"}`
             },
             {
               "type": "kmarkdown",
-              "content": `**${i18n.t("checkban.viewNum", this.lang)}**\n${player_info?.data.viewNum ?? 0}`
+              "content": `**${i18n.t("checkplayer.viewNum", this.lang)}**\n${player_info?.data.viewNum ?? 0}`
             },
             {
               "type": "kmarkdown",
-              "content": `**${i18n.t("checkban.commentsNum", this.lang)}**\n${player_info?.data.commentsNum ?? 0}`
+              "content": `**${i18n.t("checkplayer.commentsNum", this.lang)}**\n${player_info?.data.commentsNum ?? 0}`
             },
             {
               "type": "kmarkdown",
-              "content": `**${i18n.t("checkban.gameId", this.lang)}**\n${player_info?.data.originPersonaId ?? '-'}`
+              "content": `**${i18n.t("checkplayer.gameId", this.lang)}**\n${player_info?.data.originPersonaId ?? '-'}`
             }
 
           ]
@@ -120,17 +120,17 @@ class PlayerCardTemplate extends BaseTemplate {
           "fields": [
             {
               "type": "kmarkdown",
-              "content": `**${i18n.t("checkban.createTime", this.lang)}**\n${player_i18n_createTime}`
+              "content": `**${i18n.t("checkplayer.createTime", this.lang)}**\n${player_i18n_createTime}`
             },
             {
               "type": "kmarkdown",
-              "content": `**${i18n.t("checkban.updateTime", this.lang)}**\n${player_i18n_updateTime}`
+              "content": `**${i18n.t("checkplayer.updateTime", this.lang)}**\n${player_i18n_updateTime}`
             }
           ]
         }
       })
       .addDivider()
-      .addText(`${i18n.t("checkban.historyName", this.lang)}: ${player_historyName.toString()}`);
+      .addText(`${i18n.t("checkplayer.historyName", this.lang)}: ${player_historyName.toString()}`);
 
     // set card footer
     message.addFooter()

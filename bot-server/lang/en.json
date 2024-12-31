@@ -69,7 +69,7 @@
   "admin": {
     "help": "Management Robot"
   },
-  "checkban": {
+  "checkplayer": {
     "help": "check players",
     "name": {
       "title": "there are multiple results",

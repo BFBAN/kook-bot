@@ -19,10 +19,11 @@ import botStatus from "./lib/botStatus";
 import botMarket from "./lib/botMarket";
 import { SentryManagement } from "./lib/sentry";
 
-import router_index from "./network-server/index";
+import router_apis from "./network-server/apis";
 import { reportMenu } from "./bot-server/commands/report/report.menu";
 import { bindingMenu } from "./bot-server/commands/binding/binding.menu";
 import { httpBfban } from "./lib";
+import router from "./network-server/apis";
 
 try {
   /// 机器人服务
@@ -84,7 +85,15 @@ try {
     init() {
       this.app.use(bodyParser.json());
 
-      this.app.use("/api", router_index);
+      this.app.use("/api", router_apis);
+
+      router.get("/auths.txt", async (req: any, res: any, next: any) => {
+        try {
+          res.status(200).text('');
+        } catch (e) {
+          bot.logger.error(e);
+        }
+      });
 
       this.app.use((req, res, next) => {
         res.status(500);
